@@ -15,11 +15,22 @@ services:
     ports:
       - "5432:5432"
 
-  server:
+  auth:
     build:
       context: .
+      dockerfile: auth.Dockerfile
     env_file: .env
-    ports:
-      - "8080:8080"
     depends_on:
       - db
+    ports:
+      - "${RUBILNIK_AUTH_SERVICE_PORT}:${RUBILNIK_AUTH_SERVICE_PORT}"
+
+  room:
+    build:
+      context: .
+      dockerfile: room.Dockerfile
+    env_file: .env
+    depends_on:
+      - auth
+    ports:
+      - "${RUBILNIK_ROOM_SERVICE_PORT}:${RUBILNIK_ROOM_SERVICE_PORT}"
