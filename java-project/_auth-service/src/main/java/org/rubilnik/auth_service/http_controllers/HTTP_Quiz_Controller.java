@@ -47,7 +47,10 @@ public class HTTP_Quiz_Controller {
         // without back reference from collection's objects
         // @JsonBackReference does prevent infinite loops 
         // but it doesnt link objects back
-        var quiz = user.claimQuiz(body.quiz);
+        var quiz = user.createQuiz(null);
+        quiz.updateFrom(body.quiz);
+        // var quiz = user.claimQuiz(body.quiz);
+
         for (var q : quiz.getQuestions()){
             quiz.addQuestion(q);
             for (var ch : q.getChoices()){
@@ -69,9 +72,11 @@ public class HTTP_Quiz_Controller {
         var quiz = opt.get();
         if (!quiz.getAuthor().getId().equals(body.validation.id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid quiz owner");
         if (!quiz.getAuthor().getPassword().equals(body.validation.password)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
+        // quiz = body.quiz;
+        quiz.updateFrom(body.quiz);
         quiz.setDateSaved(new Date());
         quizRepository.save(quiz);
-        return ResponseEntity.ok().body(body.quiz); 
+        return ResponseEntity.ok().body(quiz);
     }
 
     static class DeleteQuizJsonBody{

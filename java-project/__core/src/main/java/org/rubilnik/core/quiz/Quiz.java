@@ -84,6 +84,16 @@ public class Quiz {
             // TODO: handle exception
         }
     }
+
+    public void updateFrom(Quiz quiz){
+        this.title = quiz.title;
+        // for JPA to delete freed question entitys
+        this.questions.clear(); this.questions.addAll(quiz.questions);  
+        // this.questions = quiz.questions;
+        this.startEndNodesPositions = quiz.startEndNodesPositions;
+        this.graphEdges = quiz.graphEdges;
+    }
+
     // public Quiz addQuestion(Question question){
     //     this.questions.add(question);
     //     return this;
