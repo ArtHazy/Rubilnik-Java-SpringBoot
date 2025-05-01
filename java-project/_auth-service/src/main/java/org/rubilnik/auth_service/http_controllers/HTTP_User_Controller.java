@@ -1,12 +1,10 @@
 package org.rubilnik.auth_service.http_controllers;
 
-import org.rubilnik.auth_service.repositories.UserRepository;
+import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,9 +27,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class HTTP_User_Controller {
 
     @Autowired
-    UserRepository userRepository;
+    UserMemoService memo;
 
-    static class UserValidationInfo{
+    public static class UserValidationInfo{
         public String id,password,email;
     }
 
@@ -42,12 +40,12 @@ public class HTTP_User_Controller {
     ResponseEntity<?> postUser(@RequestBody PostUserJsonBody body){
         var info = new UserValidationInfo();
         info.email = body.user.getEmail(); info.id = body.user.getId(); info.password = body.user.getPassword();
-        var userFromDB = getOptionalUserFromDB(body.user.getId(),body.user.getEmail());
+        var userFromDB = memo.get(body.user.getId(),body.user.getEmail());
         if (userFromDB.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User with such id already exists");
         else {
             var user = new User(body.user.getName(),body.user.getEmail(),body.user.getPassword());
-            userRepository.save(user);
-            user = getValidUserFromDB(info);
+            memo.save(user);
+            user = memo.getValid(info);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(user);
         }
     }
@@ -57,8 +55,8 @@ public class HTTP_User_Controller {
     }
     @DeleteMapping()
     ResponseEntity<?> deleteUser(@RequestBody DeleteUserJsonBody body){
-        var user = getValidUserFromDB(body.validation);
-        userRepository.delete(user);
+        var user = memo.getValid(body.validation);
+        memo.delete(user);
         user.clearID();
         return ResponseEntity.ok().build();
     }
@@ -69,11 +67,11 @@ public class HTTP_User_Controller {
     }
     @PutMapping()
     ResponseEntity<?> putUser(@RequestBody PutUserJsonBody body){
-        var user = getValidUserFromDB(body.validation);
+        var user = memo.getValid(body.validation);
         user.setName(body.user.getName());
         user.setEmail(body.user.getEmail());
         user.setPassword(body.user.getPassword());
-        userRepository.save(user);
+        memo.save(user);
         return ResponseEntity.ok().build();
     }
 
@@ -82,7 +80,7 @@ public class HTTP_User_Controller {
     }
     @PostMapping("/verify")
     ResponseEntity<?> postUserVerification(@RequestBody PostUserVerificationJsonBody body){
-        getValidUserFromDB(body.validation);
+        memo.getValid(body.validation);
         return ResponseEntity.ok().build();
     }
 
@@ -91,23 +89,7 @@ public class HTTP_User_Controller {
     }
     @PostMapping("/get")
     ResponseEntity<?> postUserGet(@RequestBody PostUserGetJsonBody body){
-        var user = getValidUserFromDB(body.validation);
+        var user = memo.getValid(body.validation);
         return ResponseEntity.ok().body(user);
-    }
-
-    private Optional<User> getOptionalUserFromDB(String id, String email) throws ResponseStatusException{
-        Optional<User> opt;
-        if (id!=null) opt = userRepository.findById(id);
-        else if (email!=null) opt = userRepository.findByEmail(email);
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Request must contain User id or email");
-        return opt;
-    }
-    
-    private User getValidUserFromDB(UserValidationInfo info) throws ResponseStatusException{
-        var opt = getOptionalUserFromDB(info.id, info.email);
-        if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id wasn't found");
-        var user = opt.get();
-        if (!user.getPassword().equals(info.password)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
-        return user;
     }
 }

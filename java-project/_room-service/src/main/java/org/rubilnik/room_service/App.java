@@ -16,8 +16,8 @@ public class App {
     static class PostUserVerificationJsonBody{
         public UserValidationInfo validation;
     }
-    // private static boolean useAuthentication = !System.getenv("AUTH_SERVICE_URL").isBlank();
-    private static RestClient auth_service_rest_client = RestClient.builder().baseUrl( System.getenv("AUTH_SERVICE_URL") ).build();
+
+    private static RestClient auth_service_rest_client;
  
     static boolean validateUser(UserValidationInfo info) {
         try {
@@ -42,6 +42,8 @@ public class App {
         return "Hello room service!";
     }
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        var context = SpringApplication.run(App.class, args);
+        var env = context.getEnvironment();
+        auth_service_rest_client = RestClient.builder().baseUrl( env.getProperty("rubilnik.auth-service-url") ).build();
     }
 }
