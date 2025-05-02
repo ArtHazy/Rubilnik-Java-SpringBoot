@@ -1,6 +1,6 @@
 plugins {
     application
-    id("org.springframework.boot") version "3.3.2"
+//    id("org.springframework.boot") version "3.3.2"
 }
 
 repositories {
@@ -17,7 +17,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 

@@ -37,7 +37,7 @@ public class Choice {
         this.title = title;
     }
     public Choice(String title, float value){
-        this.value = Math.clamp(value, 0, 1);
+        this.value = Math.max(0, Math.min(1, value));
         this.title = title;
     }
     public float getValue() {
