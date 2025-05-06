@@ -8,3 +8,5 @@
 # Ignore Gradle build output directory
 build
 bin
+# Ignore prebuilt dependencies
+java-project/_desktop-ui/src/main/resources/jars/

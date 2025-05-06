@@ -23,15 +23,16 @@ public class App {
             users.forEach((u)->{
                 User.getIdManager().putId(u.getId());
             });
+
         }
 
         // create and save default user if doesnt exist
         if (!userMemo.get("AAAA", null).isPresent()) {
 
-            // System.getenv заменен ~на @Value()~ на ConfigurableEnvironment env для кастомизации запуска с помощью параметров в java -jar (String[] args) 
-            // Spring добавляет эти параметры в контекст в приоритете над application.properties 
+            // System.getenv заменен ~на @Value()~ на ConfigurableEnvironment env для кастомизации запуска с помощью параметров в java -jar (String[] args)
+            // Spring добавляет эти параметры в контекст в приоритете над application.properties
             var defUser = new User(env.getProperty("rubilnik.def-usr.name"),env.getProperty("rubilnik.def-usr.email"),env.getProperty("rubilnik.def-usr.password"));
             userMemo.save(defUser);
-        }        
+        }
     }
 }
