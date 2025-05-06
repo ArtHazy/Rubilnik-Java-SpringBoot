@@ -12,3 +12,5 @@ plugins {
 
 rootProject.name = "Rubilnik-Core-Java"
 include("__core", "_auth-service", "_room-service", "_desktop-ui")
+
+include("_ui-service")
