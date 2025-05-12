@@ -19,6 +19,8 @@ public class Choice {
     @Id @GeneratedValue @JsonProperty
     private long id;
     @Column @JsonProperty
+    private String tempId;
+    @Column @JsonProperty
     private String title = "new-choice";
     @Embedded @JsonProperty
     private Position2D position = new Position2D(0, 0);

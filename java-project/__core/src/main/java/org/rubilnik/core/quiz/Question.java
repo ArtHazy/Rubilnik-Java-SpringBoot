@@ -26,7 +26,7 @@ public class Question {
     @Id @GeneratedValue @JsonProperty
     private long id;
     @Column @JsonProperty
-    private String localId; // unique in one quiz, can repeat between others // created by frontend before generating database id
+    private String tempId; // unique in one quiz, can repeat between others // created by frontend before generating database id
     @Column @JsonProperty
     private String title = "new-question";
     @Embedded @JsonProperty
