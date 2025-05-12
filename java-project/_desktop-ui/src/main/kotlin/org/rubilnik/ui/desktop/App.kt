@@ -27,11 +27,17 @@ import androidx.compose.ui.unit.dp
 import java.awt.Desktop
 import java.net.ServerSocket
 import java.net.URI
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 //
 
 var auth_service_process: Process? = null
 var room_service_process: Process? = null
+
+object Globar {
+    var localNetworkConnectionString: Optional<String> = Optional.empty<String>();
+}
 
 fun main() = singleWindowApplication (
     title = "Rubilnik Launcher",
@@ -40,6 +46,11 @@ fun main() = singleWindowApplication (
     var web_ui_service_port by remember { mutableStateOf("0") }
     var auth_service_port by remember { mutableStateOf("null") }
     var room_service_port by remember { mutableStateOf("null") }
+
+    var encryption by remember { mutableStateOf("WPA") }
+    var ssid by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
 
     window.minimumSize = Dimension(300,300)
     window.maximumSize = Dimension(450,450)
@@ -86,6 +97,8 @@ fun main() = singleWindowApplication (
                 }) {
                     Text("Open")
                 }
+                networkSettings()
+                Text(Globar.localNetworkConnectionString.getOrNull().toString())
             }
         }
     }

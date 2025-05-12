@@ -18,6 +18,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop:3.3.2")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.3.2")
 
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.3.2")
+
     implementation("org.postgresql:postgresql:42.7.3")
     // implementation("org.hibernate.orm:hibernate-core:6.6.0.Final")
     implementation("org.json:json:20240303")
