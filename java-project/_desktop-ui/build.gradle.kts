@@ -8,7 +8,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("jvm") version "1.9.0"
     id("org.jetbrains.compose") version "1.5.0"
-    // application
+//    application
 }
 
 repositories {
@@ -66,16 +66,19 @@ compose.desktop {
     }
 }
 
-//tasks.named<Test>("test") {
-//    useJUnitPlatform()
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+}
+
+//application {
+// mainClass.set("com.example.ui.MainKt")
 //}
 
-// application {
-//     mainClass.set("com.example.ui.MainKt")
-// }
 
+tasks.register("includeServiceJars",Copy::class) {
+    dependsOn(":_auth-service:build")
+    dependsOn(":_room-service:build")
 
-val copyServiceJars by tasks.registering(Copy::class) {
     val services = listOf("_auth-service", "_room-service")
 
     services.forEach { serviceName ->
@@ -92,5 +95,5 @@ val copyServiceJars by tasks.registering(Copy::class) {
 }
 
 tasks.named("processResources") {
-    dependsOn(copyServiceJars)
+    dependsOn("includeServiceJars")
 }
