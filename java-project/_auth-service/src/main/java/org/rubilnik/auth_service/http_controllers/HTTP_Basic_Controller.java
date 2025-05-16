@@ -58,7 +58,7 @@ public class HTTP_Basic_Controller {
                 if (iface.isUp() && !iface.isLoopback()) {
                     var interfaceAddresses = iface.getInterfaceAddresses();
                     for (var address : interfaceAddresses) {
-                        if (address.getAddress().isSiteLocalAddress()) {
+                        if (address.getAddress().isSiteLocalAddress() && address.getAddress().getHostAddress().contains("192.168.0")) {
                             return address.getAddress().getHostAddress();  // getCanonicalHostName() // "user_pc"
                         }
                     }

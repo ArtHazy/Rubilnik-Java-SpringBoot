@@ -9,13 +9,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 // Using ResponceEntity at top level of controller mapping, using throw ResponceStatusException in submethods (not bothering with return), ResponceStatusException handled by controller
@@ -88,7 +82,10 @@ public class HTTP_User_Controller {
         public UserValidationInfo validation;
     }
     @PostMapping("/get")
-    ResponseEntity<?> postUserGet(@RequestBody PostUserGetJsonBody body){
+    ResponseEntity<?> postUserGet(
+            @RequestBody PostUserGetJsonBody body
+            //@RequestHeader("Authorization") String auth
+    ){
         var user = memo.getValid(body.validation);
         return ResponseEntity.ok().body(user);
     }

@@ -1,6 +1,6 @@
 package org.rubilnik.ui.desktop
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -9,31 +9,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import java.io.File
 import java.util.Optional
 
 @Composable
 fun networkSettings() {
-    Column {
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         var encryption by remember { mutableStateOf("WPA") }
         var ssid by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var qrstr by remember { mutableStateOf(Optional.of("")) }
 
-        TextField(label = { Text("encryption") }, value = encryption, onValueChange = {encryption=it})
-        TextField(label = { Text("name") }, value = ssid, onValueChange = {ssid=it})
-        TextField(label = { Text("password") }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation())
-        Button(onClick = {
-            val (encryption_, ssid_, password_) = getCurrentWifiNetData()
-            encryption=encryption_
-            ssid=ssid_
-            password=password_
 
-            qrstr=Optional.of("WIFI:T:${encryption};S:${ssid};P:${password};H:false;;")
-            Global.lanQrString=qrstr
 
-        }){ Text("Use current network") }
+        TextField(label = { Text("encryption") }, value = encryption, onValueChange = {encryption=it}, singleLine = true, modifier = textFieldModifier)
+        TextField(label = { Text("name") }, value = ssid, onValueChange = {ssid=it}, singleLine = true, modifier = textFieldModifier)
+        TextField(label = { Text("password") }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation(), singleLine = true, modifier = textFieldModifier)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()){
+            Button(onClick = {
+                val (encryption_, ssid_, password_) = getCurrentWifiNetData()
+                encryption=encryption_
+                ssid=ssid_
+                password=password_
+
+                qrstr=Optional.of("WIFI:T:${encryption};S:${ssid};P:${password};H:false;;")
+                Global.lanQrString=qrstr
+
+            }){ Text("Use current network") }
+        }
 //        Text(qrstr.getOrNull().toString())
 
     }

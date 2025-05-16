@@ -1,11 +1,6 @@
 package org.rubilnik.ui.desktop
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.ui.window.singleWindowApplication
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -39,6 +34,9 @@ object Global {
     var lanQrString: Optional<String> = Optional.empty<String>();
 }
 
+val textFieldModifier = Modifier
+    .width(256.dp)
+
 fun main() = singleWindowApplication (
     title = "Rubilnik Launcher",
     icon = BitmapPainter(useResource("icons/app-icon.png", ::loadImageBitmap))// ("app-icon.png") //BitmapPainter( loadImageBitmap() //File("./src/main/resources/app-icon.png").inputStream()) )
@@ -51,7 +49,6 @@ fun main() = singleWindowApplication (
     var ssid by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-
     window.minimumSize = Dimension(300,300)
     window.maximumSize = Dimension(450,450)
     window.setSize(window.maximumSize)
@@ -59,7 +56,7 @@ fun main() = singleWindowApplication (
     MaterialTheme{
         Column (Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
             Column () {
-                TextField(label = {Text("web-ui-service-port")}, singleLine = true, value = web_ui_service_port, onValueChange = { web_ui_service_port = it })
+                TextField(enabled = false, label = {Text("web-ui-service-port")}, singleLine = true, value = web_ui_service_port, onValueChange = { web_ui_service_port = it }, modifier = textFieldModifier )
 //                Spacer(Modifier.size(8.dp))
 //                TextField(label = {Text("auth-service-port")}, singleLine = true, value = auth_service_port, onValueChange = { auth_service_port = it })
 //                Spacer(Modifier.size(8.dp))
@@ -93,15 +90,16 @@ fun main() = singleWindowApplication (
 //                Text("auth_service_port: ${auth_service_port}")
 //                Text("room_service_port: ${room_service_port}")
 //            }
-            Column {
+
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(onClick = {
                     if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI("http://localhost:${web_ui_service_port}"))
                 }) {
                     Text("Open")
                 }
-                networkSettings()
-                Text(Global.lanQrString.getOrNull().toString())
             }
+            networkSettings()
+//            Text(Global.lanQrString.getOrNull().toString())
         }
     }
 }
