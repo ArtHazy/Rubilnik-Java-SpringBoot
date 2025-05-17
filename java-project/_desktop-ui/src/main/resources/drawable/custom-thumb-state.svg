@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+    <rect
+            x="10" y="10"
+            width="50" height="50"
+            rx="5" ry="5"
+            fill="#GREY_LIGHT"
+            stroke="transparent"
+            stroke-width="20"/>
+</svg>

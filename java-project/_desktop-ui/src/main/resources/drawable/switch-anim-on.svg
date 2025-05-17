@@ -1,0 +1,23 @@
+<svg width="150" height="70" viewBox="0 0 150 70" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="150" height="70" rx="5" ry="5" fill="#CCCCCC">
+        <animate attributeName="fill" from="#CCCCCC" to="#444444" dur="0.5s" fill="freeze" repeatCount="1"/>
+    </rect>
+
+    <!-- OFF Label -->
+    <text x="25" y="42" font-size="14" fill="#444444" font-family="Arial" text-anchor="middle">
+        OFF
+        <animate attributeName="opacity" from="1" to="0" dur="0.5s" fill="freeze" repeatCount="1"/>
+    </text>
+
+    <!-- ON Label -->
+    <text x="125" y="42" font-size="14" fill="#FFFFFF" font-family="Arial" text-anchor="middle" opacity="0">
+        ON
+        <animate attributeName="opacity" from="0" to="1" dur="0.5s" fill="freeze" repeatCount="1"/>
+    </text>
+
+    <!-- Knob -->
+    <circle cx="35" cy="35" r="25" fill="#FFFFFF">
+        <animate attributeName="cx" from="35" to="115" dur="0.5s" fill="freeze" repeatCount="1"/>
+    </circle>
+</svg>
