@@ -45,7 +45,7 @@ public class WS_EventHandler {
         WS_BinaryHandler.messageToUser_WS(player, WS_ReplyFactory.onJoin(player.getId(), player.getName(), room.getUsers()));
         var otherUsers = room.getUsers();
         otherUsers.remove(player);
-        WS_BinaryHandler.messageTo_WS(otherUsers, WS_ReplyFactory.onJoined(player.getId(), player.getEmail(), room.getUsers()));
+        WS_BinaryHandler.messageTo_WS(otherUsers, WS_ReplyFactory.onJoined(player.getId(), player.getName(), room.getUsers()));
     }
 
     static class CreateRequest_Data{

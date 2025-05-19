@@ -12,4 +12,5 @@ public interface UserMemoService {
     User getValid(UserValidationInfo info) throws ResponseStatusException;
     Iterable<User> getAll();
     void delete(User user);
+    User getByName(String name);
 }

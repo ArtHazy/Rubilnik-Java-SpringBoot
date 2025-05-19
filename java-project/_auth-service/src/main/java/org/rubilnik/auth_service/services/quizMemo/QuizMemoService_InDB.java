@@ -6,6 +6,7 @@ import org.rubilnik.core.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,6 +15,8 @@ public class QuizMemoService_InDB implements QuizMemoService {
 
     @Autowired
     QuizRepository dbRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public void save(Quiz quiz) {
@@ -25,7 +28,7 @@ public class QuizMemoService_InDB implements QuizMemoService {
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Quiz with such id wasn't found");
         var quiz = opt.get();
         if (!quiz.getAuthor().getId().equals(validation.id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid quiz owner");
-        if (!quiz.getAuthor().getPassword().equals(validation.password)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid user password");
+        if (!passwordEncoder.matches(validation.password, quiz.getAuthor().getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid user password");
         return quiz;
     }
     @Override

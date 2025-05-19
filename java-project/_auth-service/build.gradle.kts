@@ -16,6 +16,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web:3.3.2")
     implementation("org.springframework.boot:spring-boot-starter-aop:3.3.2")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.3.2")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.3.2")
 
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.3.2")
@@ -50,6 +51,19 @@ val reactProjPath = "../../../rubilnik-js-react/react-project"
 //}
 tasks.register("includeReactUI", Copy::class){
 //    dependsOn(":compileReactUI")
+//    doFirst{
+//        println("cleanup")
+//        project.delete(files("src/main/resources/templates/index.html","src/main/resources/assets"))
+//    }
+
+    doFirst {
+        println("doFirst")
+        project.delete(
+            layout.projectDirectory.file("src/main/resources/templates/index.html"),
+            fileTree(layout.projectDirectory.dir("src/main/resources/assets"))
+        )
+    }
+
     from("${reactProjPath}/dist/assets") {
         include("**/*") // Include all
         into("public/assets")

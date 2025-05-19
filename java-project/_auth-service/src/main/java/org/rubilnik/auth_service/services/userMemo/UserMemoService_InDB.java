@@ -8,6 +8,7 @@ import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,9 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserMemoService_InDB implements UserMemoService {
     @Autowired
     UserRepository dbRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public void save(User user) {
+        user.setPassword( passwordEncoder.encode(user.getPassword()) );
         dbRepository.save(user);
     }
     @Override
@@ -33,7 +37,7 @@ public class UserMemoService_InDB implements UserMemoService {
         var opt = get(info.id, info.email);
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id wasn't found");
         var user = opt.get();
-        if (!user.getPassword().equals(info.password)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
+        if ( !passwordEncoder.matches(info.password,user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
         return user;
     }
     @Override
@@ -43,5 +47,9 @@ public class UserMemoService_InDB implements UserMemoService {
     @Override
     public void delete(User user) {
         dbRepository.delete(user);
+    }
+    @Override
+    public User getByName(String name) {
+        return dbRepository.findByName(name).orElse(null);
     }
 }

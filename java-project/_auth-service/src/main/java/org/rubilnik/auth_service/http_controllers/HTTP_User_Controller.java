@@ -9,6 +9,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -48,7 +49,7 @@ public class HTTP_User_Controller {
         public UserValidationInfo validation;
     }
     @DeleteMapping()
-    ResponseEntity<?> deleteUser(@RequestBody DeleteUserJsonBody body){
+    ResponseEntity<?> deleteUser( /*Authentication auth,*/ @RequestBody DeleteUserJsonBody body){
         var user = memo.getValid(body.validation);
         memo.delete(user);
         user.clearID();

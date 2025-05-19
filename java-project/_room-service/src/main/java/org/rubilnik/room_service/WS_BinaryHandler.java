@@ -43,7 +43,7 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         try {
             User user = userConnections.get1(session);
-            if (user instanceof Player) user.clearID();
+            if (user instanceof Player && user.getId().length()==5) user.clearID(); // if Quest
             if (user instanceof Host){
                 for (Player player : user.getRoom().getPlayers()) {
                     userConnections.remove2(player).close();

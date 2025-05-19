@@ -12,4 +12,5 @@ public interface UserRepository extends CrudRepository<User,String> {
     // custom method. Spring converts to sql query automatically. Same as with annotation below:
     //  @Query(value = "SELECT * FROM users WHERE email = :email, nativeQuery = true)
     Optional<User> findByEmail(String email);
+    Optional<User> findByName(String name);
 }
