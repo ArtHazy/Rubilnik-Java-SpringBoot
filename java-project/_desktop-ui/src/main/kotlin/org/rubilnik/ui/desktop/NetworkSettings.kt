@@ -12,19 +12,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import java.util.Optional
 
 @Composable
 fun networkSettings() {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        var encryption by remember { mutableStateOf("WPA") }
+        var encryption by remember { mutableStateOf("") }
         var ssid by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var qrstr by remember { mutableStateOf(Optional.of("")) }
 
 //        Text("Network settings", )
 
-        Text("Network settings", style = myTypography.h5)
+        Text("Network settings", style = myTypography.h5, modifier = Modifier.padding(8.dp))
         MyTextField(label = { Text("encryption") }, value = encryption, onValueChange = {encryption=it})
         MyTextField(label = { Text("name") }, value = ssid, onValueChange = {ssid=it})
         MyTextField(label = { Text("password") }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation())

@@ -6,7 +6,7 @@ param (
 Clear-Content -Path $logFile
 
 # Get current SSID
-$ssid = (netsh wlan show interfaces | Select-String -Pattern "SSID" | ForEach-Object { $_.Line.Split(":")[1].Trim() })
+$ssid = (netsh wlan show interfaces | Select-String -Pattern "^\s+SSID\s*:" | ForEach-Object { $_.Line.Split(":")[1].Trim() })
 
 # Get saved Wi-Fi profiles
 $profiles = netsh wlan show profiles
@@ -30,7 +30,7 @@ if ($ssid) {
 if ($password) {
     Add-Content -Path $logFile -Value "${password}"
 } else {
-    Add-Content -Path $logFile -Value "Password not found or access denied."
+    Add-Content -Path $logFile -Value ""
 }
 
 if ($auth) {

@@ -89,11 +89,14 @@ fun myGetCurrentWifiNetData():WifiNetData {
     }
 
     val lines = logFile.readLines()
-    val ssid = lines[0]
-    val password = lines[1]
-    var encryption = ""
-    if (lines[2].contains("WPA")) encryption = "WPA"
-    else if (lines[2].contains("WEP")) encryption = "WEP"
-    else encryption = "nopass"
-    return WifiNetData(encryption,ssid,password)
+    if (lines.size>=3){
+        val ssid = lines[0]
+        val password = lines[1]
+        var encryption = ""
+        if (lines[2].contains("WPA")) encryption = "WPA"
+        else if (lines[2].contains("WEP")) encryption = "WEP"
+        else encryption = "nopass"
+        return WifiNetData(encryption,ssid,password)
+    }
+    return WifiNetData("","","")
 }

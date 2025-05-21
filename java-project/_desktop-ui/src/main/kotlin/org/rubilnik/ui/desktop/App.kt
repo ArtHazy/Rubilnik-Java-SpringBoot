@@ -85,7 +85,7 @@ fun main() = singleWindowApplication (
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     //TextField(enabled = false, label = {Text("web-ui-service-port")}, singleLine = true, value = web_ui_service_port, onValueChange = { web_ui_service_port = it }, modifier = myTextFieldModifier )
                     MyCentredRow {
-                        Text("started on port:", style =  myTypography.h5)
+                        Text("started on port:", style =  myTypography.h5, modifier = Modifier.padding(8.dp))
                         Text(web_ui_service_port, style = myTypography.h5, color = myColorYellowLight)
                     }
                     MyCentredRow {
@@ -101,6 +101,6 @@ fun main() = singleWindowApplication (
                 networkSettings()
             }
         }
-        Text("v0.0.0-alpha")
+        Text("v1.0.0-alpha")
     }
 }

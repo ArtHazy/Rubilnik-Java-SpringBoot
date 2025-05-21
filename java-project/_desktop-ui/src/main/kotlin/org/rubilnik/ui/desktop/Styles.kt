@@ -14,6 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 //import java.awt.Color
@@ -107,22 +108,27 @@ val myTextStyle = TextStyle(
     color = myColorLight
 )
 
+val russoOne = FontFamily(
+    Font("fonts/RussoOne-Regular.ttf", FontWeight.Normal)
+)
+val robotoFlex = FontFamily(
+    Font("fonts/RobotoFlex-VariableFont.ttf", FontWeight.Normal)
+)
 
 val myTypography = Typography(
     defaultFontFamily = FontFamily.Default,
-    h1 = TextStyle(color = myColorCyanLight, fontSize = 36.sp, fontWeight = FontWeight.Bold),
-    h2 = TextStyle(color = myColorYellowLight), //color = myColorYellowLight),
-            //TextStyle(color = myColorYellowLight),
+    h1 = TextStyle(color = myColorCyanLight, fontSize = 36.sp, fontWeight = FontWeight.Bold, fontFamily = russoOne),
+    h2 = TextStyle(color = myColorYellowLight, fontFamily = russoOne), //color = myColorYellowLight),
     h3 = myTextStyle,
     h4 = myTextStyle,
-    h5 = TextStyle(color = myColorLight, fontSize = 16.sp, fontWeight = FontWeight.Normal, fontFamily = FontFamily.Monospace),
+    h5 = TextStyle(color = myColorLight, fontSize = 16.sp, fontWeight = FontWeight.Normal, fontFamily = robotoFlex),
     h6 = myTextStyle,
     subtitle1 = myTextStyle,
     subtitle2 = myTextStyle,
-    body1 = myTextStyle, // textfield bg
+    body1 = TextStyle(color = myColorLight, fontWeight = FontWeight.Normal, fontSize = 16.sp, letterSpacing = 0.5.sp, fontFamily = robotoFlex), // textfield
     body2 = myTextStyle,
-    button = myTextStyle,
-    caption = myTextStyle,
+    button = TextStyle.Default.copy( fontFamily = robotoFlex ),
+    caption = TextStyle.Default.copy( color = myColorLight, fontFamily = robotoFlex ), // textfield caption
     overline = myTextStyle,
 )
 
