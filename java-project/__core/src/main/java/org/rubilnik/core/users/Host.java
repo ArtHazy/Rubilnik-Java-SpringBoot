@@ -10,17 +10,17 @@ public class Host extends User {
     public Host(User user) {super(user);}
 
 
-    public Question nextQuestion(){
+    public Question nextQuestion(long id){
         checkRoomForNull();
         try {
-            return room.next();
+            return room.next(id);
         } catch (IndexOutOfBoundsException e){
             return null;
         }
     }
-    public Question startRoom() throws RuntimeException{
+    public Question startRoom(long id) throws RuntimeException{
         checkRoomForNull();
-        return room.start();
+        return room.start(id);
     }
     public List<Entry<Player, Integer>> endRoom() throws RuntimeException{
         checkRoomForNull();

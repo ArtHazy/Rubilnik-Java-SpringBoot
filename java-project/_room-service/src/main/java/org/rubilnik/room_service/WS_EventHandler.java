@@ -51,6 +51,7 @@ public class WS_EventHandler {
     static class CreateRequest_Data{
         public UserValidationInfo validation;
         public Quiz quiz;
+        public Long questionId;
     }
     void create(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
         var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, CreateRequest_Data.class);
@@ -79,16 +80,24 @@ public class WS_EventHandler {
         return host;
     }
 
-    void start(WebSocketSession session) throws WebSocketEventException{
+    static class StartRequest_Data {
+        public long questionId;
+    }
+    void start(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
+        var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, StartRequest_Data.class);
         var host = _start_next_end_shared(session);
         var room = host.getRoom();
-        var question = host.startRoom();
+        var question = host.startRoom(bodyData.questionId);
         WS_BinaryHandler.messageTo_WS(room.getUsers(), WS_ReplyFactory.onStart(question, room.getQuiz().getQuestions().indexOf(room.getCurrentQuestion()), room.getQuiz().getQuestions().size()) );
     }
-    void next(WebSocketSession session) throws WebSocketEventException{
+    static class NextRequest_Data {
+        public long questionId;
+    }
+    void next(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
+        var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, NextRequest_Data.class);
         var host = _start_next_end_shared(session);
         var room = host.getRoom();
-        var question = host.nextQuestion();
+        var question = host.nextQuestion(bodyData.questionId);
         WS_BinaryHandler.messageTo_WS(room.getUsers(), WS_ReplyFactory.onNext(question, room.getQuiz().getQuestions().indexOf(room.getCurrentQuestion()), room.getQuiz().getQuestions().size()));  
     }
     void end(WebSocketSession session) throws WebSocketEventException{

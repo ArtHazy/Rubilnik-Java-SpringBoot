@@ -1,6 +1,6 @@
 package org.rubilnik.core;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -10,12 +10,8 @@ import org.rubilnik.core.users.Host;
 import org.rubilnik.core.users.Player;
 import org.rubilnik.core.users.User;
 
-import java.util.Map;
-import java.util.List;
 import java.util.Map.Entry;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
 
 public class Room implements Serializable{
     // keeps track of the created rooms
@@ -140,23 +136,16 @@ public class Room implements Serializable{
         }
         System.out.println(this.toString());
     }
-    public Question start() throws RuntimeException{
+    public Question start(long id) throws NoSuchElementException{
         this.status = STATUS_PROGRESS;
+        var nextQuestion = this.quiz.getQuestions().stream().filter(question->question.getId()==id ).findAny().orElseThrow(()->new NoSuchElementException("Question with such id wasn't found"));
         this.currentQuestionIndex = 0;
-        try {
-            return this.quiz.getQuestions().get(currentQuestionIndex);
-        } catch (IndexOutOfBoundsException e){
-            throw new RuntimeException("cant start an empty quiz");
-        }
+        return nextQuestion;
     }
-    public Question next() throws IndexOutOfBoundsException{
-        try {
-            var nextQuestion = this.quiz.getQuestions().get(currentQuestionIndex+1);
-            currentQuestionIndex+=1;
-            return nextQuestion;
-        } catch (IndexOutOfBoundsException e){
-            throw new IndexOutOfBoundsException("no more questions in this quiz");
-        }
+    public Question next(long id) throws NoSuchElementException{
+        var nextQuestion = this.quiz.getQuestions().stream().filter(question->question.getId()==id ).findAny().orElseThrow(()->new NoSuchElementException("Question with such id wasn't found"));
+        currentQuestionIndex+=1;
+        return nextQuestion;
     }
     public List<Entry<Player, Integer>> end(){
         this.status = STATUS_COMPLETE;

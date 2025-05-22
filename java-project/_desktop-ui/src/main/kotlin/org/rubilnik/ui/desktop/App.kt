@@ -21,6 +21,8 @@ import androidx.compose.ui.res.useResource
 import androidx.compose.ui.res.loadSvgPainter
 import androidx.compose.ui.unit.dp
 import java.awt.Desktop
+import java.io.IOException
+import java.net.ServerSocket
 import java.net.URI
 import java.util.Optional
 
@@ -67,8 +69,16 @@ fun main() = singleWindowApplication (
                     onCheckedChange = { newState ->
                         isStarted = newState
                         if (isStarted==true){
-                            auth_service_port = myGetFreePort().toString()
-                            room_service_port = myGetFreePort().toString()
+                            // TODO remove debug
+                            try {
+                                ServerSocket(8081).use {  }
+                                ServerSocket(8082).use {  }
+                                auth_service_port = "8081"
+                                room_service_port = "8082"
+                            } catch (e:IOException) {
+                                auth_service_port = myGetFreePort().toString()
+                                room_service_port = myGetFreePort().toString()
+                            }
                             web_ui_service_port = auth_service_port+""
                             myStartServices(auth_service_port,room_service_port, WifiNetData(encryption,ssid,password))
                         } else {

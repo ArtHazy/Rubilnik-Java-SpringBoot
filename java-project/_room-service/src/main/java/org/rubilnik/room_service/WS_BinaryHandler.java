@@ -76,8 +76,8 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
                 case "join": eventHandler.join(session,body); break;
                 case "bark": eventHandler.bark(session); break;
                 case "choice": eventHandler.choice(session, body); break;
-                case "start": eventHandler.start(session); break;
-                case "next": eventHandler.next(session); break;
+                case "start": eventHandler.start(session, body); break;
+                case "next": eventHandler.next(session, body); break;
                 case "end": eventHandler.end(session); break;
                 case "reveal": eventHandler.reveal(session); break;
                 default: throw new WebSocketEventException("Invalid event:"+" '"+body.event+"'."+" Can't handle this event");

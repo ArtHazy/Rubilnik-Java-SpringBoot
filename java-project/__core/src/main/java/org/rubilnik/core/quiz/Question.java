@@ -36,6 +36,10 @@ public class Question {
     @JsonManagedReference @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "question")
     private List<Choice> choices = new ArrayList<>();
 
+    public long getId() {
+        return id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -50,6 +54,7 @@ public class Question {
     // public List<Choice> getCorrectChoices(){
     //     return choices.stream().filter( c->(c.getValue()>0) ).collect(Collectors.toList());
     // }
+
 
     // def for JPA
     Question(){}
