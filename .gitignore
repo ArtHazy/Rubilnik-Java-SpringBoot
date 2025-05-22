@@ -10,3 +10,4 @@ build
 bin
 # Ignore prebuilt dependencies
 java-project/_desktop-ui/src/main/resources/jars/
+java-project/_auth-service/src/main/resources/public/assets

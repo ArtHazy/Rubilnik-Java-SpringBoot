@@ -9,6 +9,8 @@ import org.rubilnik.room_service.App.UserValidationInfo;
 import org.rubilnik.room_service.WS_BinaryHandler.EventMessageBody;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.NoSuchElementException;
+
 
 public class WS_EventHandler {
 
@@ -108,7 +110,7 @@ public class WS_EventHandler {
     }
 
     static class ChoiceRequest_Data{
-        public int questionInd, choiceInd;
+        public int questionId, choiceInd;
     }
     void choice(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
         var data = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, ChoiceRequest_Data.class);
@@ -117,9 +119,10 @@ public class WS_EventHandler {
         if (!(user instanceof Player)) throw new WebSocketEventException("User is not a Player");
 
         var player = (Player) user;
-        var question = room.getQuiz().getQuestions().get(data.questionInd);
+//        var question = room.getQuiz().getQuestions().get(data.questionId);
+        var question = room.getQuiz().getQuestions().stream().filter(q->q.getId()==data.questionId).findAny().orElseThrow(()->new NoSuchElementException("Couldn't find question with such id"));
         player.choose(question, data.choiceInd);
         
-        WS_BinaryHandler.messageToUser_WS(room.getHost(), WS_ReplyFactory.onChoice(user.getId(), user.getEmail(), data.questionInd, data.choiceInd));
+        WS_BinaryHandler.messageToUser_WS(room.getHost(), WS_ReplyFactory.onChoice(user.getId(), user.getEmail(), data.questionId, data.choiceInd));
     }
 }

@@ -43,13 +43,13 @@ public class WS_ReplyFactory {
         }
     }
 
-    public static String onChoice(String userId, String userName, int questionInd_, int choiceInd_) {
+    public static String onChoice(String userId, String userName, int questionId_, int choiceInd_) {
         return new WS_EventMessage("choice", new Object() {
             public Object user = new Object(){
                 public String id = userId;
                 public String name = userName;
             };
-            public int questionInd = questionInd_;
+            public int questionId = questionId_;
             public int choiceInd = choiceInd_;
         }).toString();
     }
