@@ -16,11 +16,37 @@ import org.springframework.web.server.ResponseStatusException;
 public class QuizMemoService_InApp implements QuizMemoService {
     Map<Long,Quiz> quizzes = new HashMap<>();
 
+    private long quizIdManager=0;
+    private long questionIdManager=0;
+    private long choiceIdManager=0;
+
+    private long getChoiceId() {
+        choiceIdManager++;
+        return choiceIdManager;
+    }
+    private long getQuestionId() {
+        questionIdManager++;
+        return questionIdManager;
+    }
+    private long getQuizId() {
+        quizIdManager++;
+        return quizIdManager;
+    }
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Override
     public void save(Quiz quiz) {
+        // generate IDs
+        if (quiz.getId()<=0) quiz.setId(getQuizId());
+        quiz.getQuestions().forEach(question->{
+            if (question.getId()<=0) question.setId(getQuestionId());
+            question.getChoices().forEach(choice -> {
+                if (choice.getId()<=0) choice.setId(getChoiceId());
+            });
+        });
+
         quizzes.put(quiz.getId(),quiz);
     }
     @Override

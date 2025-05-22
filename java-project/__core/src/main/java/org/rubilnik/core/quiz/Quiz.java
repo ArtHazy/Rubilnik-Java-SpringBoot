@@ -40,9 +40,9 @@ public class Quiz {
     private Date dateCreated = new Date();
     @Column @JsonProperty
     private Date dateSaved = new Date();
-    @Column @JsonProperty
+    @Column(length = 2000) @JsonProperty
     private String startEndNodesPositions = ""; // {start:{0,0}, end:[{1,1},{2,2},{3,3}]}
-    @Column @JsonProperty
+    @Column(length = 10000) @JsonProperty
     private String graphEdges = ""; /* [{source:"start", target:"q1",condition:"",score:0},{},{}] */
 
     public void setDateSaved(Date dateSaved) {
@@ -63,6 +63,9 @@ public class Quiz {
     public Long getId() {
         return id;
     }
+
+    public void setId(long id) { this.id = id; }
+
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
