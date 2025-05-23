@@ -1,5 +1,7 @@
 package org.rubilnik.auth_service.http_controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jdk.jfr.ContentType;
 import org.rubilnik.auth_service.App;
 
@@ -31,8 +33,6 @@ public class HTTP_Basic_Controller {
         var authPort = context.getWebServer().getPort();
         var springEnv = context.getEnvironment();
         var roomPort = springEnv.getProperty("rubilnik.lan.roomPort");
-//        var networkQR = "http://"+localIp+":"+authPort; //context.getEnvironment().getProperty("networkQR");
-        System.out.println(localIp+":"+authPort);
 
         model.addAttribute("localIP",localIp);
         model.addAttribute("authPort",authPort);

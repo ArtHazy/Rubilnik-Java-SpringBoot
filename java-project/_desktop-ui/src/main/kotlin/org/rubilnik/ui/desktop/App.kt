@@ -29,32 +29,28 @@ import java.util.Optional
 
 //
 
-var auth_service_process: Process? = null
-var room_service_process: Process? = null
 
 object Global {
     var lanQrString: Optional<String> = Optional.empty<String>();
 }
 
+var auth_service_process: Process? = null
+var room_service_process: Process? = null
 fun main() = singleWindowApplication (
     title = "Rubilnik Launcher",
     icon = BitmapPainter(useResource("icons/app-icon.png", ::loadImageBitmap))// ("app-icon.png") //BitmapPainter( loadImageBitmap() //File("./src/main/resources/app-icon.png").inputStream()) )
 )   {
-    var web_ui_service_port by remember { mutableStateOf("0") }
+    var web_ui_service_port by remember { mutableStateOf("null") }
     var auth_service_port by remember { mutableStateOf("null") }
     var room_service_port by remember { mutableStateOf("null") }
-
     var isStarted by remember { mutableStateOf(false) }
-
-    var encryption by remember { mutableStateOf("WPA") }
+    var encryption by remember { mutableStateOf("") }
     var ssid by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     window.minimumSize = Dimension(300,300)
     window.maximumSize = Dimension(450,450)
     window.size = window.maximumSize
-
-
 
     MyMaterialTheme{
         Column (Modifier.fillMaxSize().background(myColorBGDark), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){

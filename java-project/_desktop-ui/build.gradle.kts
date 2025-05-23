@@ -54,7 +54,6 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi)
             packageName="Rubilnik_Launcher"
             packageVersion="1.0.0"
-
             macOS {
                 signing.sign.set(false)
                 iconFile.set { project.file("src/main/resources/icons/app-icon.icns") }
@@ -62,10 +61,10 @@ compose.desktop {
             windows {
                 iconFile.set { project.file("src/main/resources/icons/app-icon.ico") }
             }
+
         }
     }
 }
-
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
@@ -78,17 +77,13 @@ tasks.named<Test>("test") {
 tasks.register("includeServiceJars",Copy::class) {
     dependsOn(":_auth-service:build")
     dependsOn(":_room-service:build")
-
     val services = listOf("_auth-service", "_room-service")
-
     services.forEach { serviceName ->
-        from("../$serviceName/build/libs") {
+        from("../$serviceName/build/libs"){
             include("$serviceName.jar")
         }
     }
-
     into("src/main/resources/jars")
-
     doFirst {
         println("Copying jars from services: ${services.joinToString()}")
     }

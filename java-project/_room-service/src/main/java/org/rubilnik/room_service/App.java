@@ -1,5 +1,7 @@
 package org.rubilnik.room_service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rubilnik.core.users.User;
 
 import org.springframework.boot.SpringApplication;

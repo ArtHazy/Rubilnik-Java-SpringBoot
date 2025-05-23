@@ -1,5 +1,6 @@
 package org.rubilnik.auth_service.http_controllers;
 
+import org.rubilnik.auth_service.App;
 import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class HTTP_User_Controller {
     }
     @PostMapping()
     ResponseEntity<?> postUser(@RequestBody PostUserJsonBody body){
+        App.logObjectAsJson(body);
         var info = new UserValidationInfo();
         info.email = body.user.getEmail(); info.id = body.user.getId(); info.password = body.user.getPassword();
         var userFromDB = memo.get(body.user.getId(),body.user.getEmail());
@@ -50,6 +52,7 @@ public class HTTP_User_Controller {
     }
     @DeleteMapping()
     ResponseEntity<?> deleteUser( /*Authentication auth,*/ @RequestBody DeleteUserJsonBody body){
+        App.logObjectAsJson(body);
         var user = memo.getValid(body.validation);
         memo.delete(user);
         user.clearID();
@@ -62,6 +65,7 @@ public class HTTP_User_Controller {
     }
     @PutMapping()
     ResponseEntity<?> putUser(@RequestBody PutUserJsonBody body){
+        App.logObjectAsJson(body);
         var user = memo.getValid(body.validation);
         user.setName(body.user.getName());
         user.setEmail(body.user.getEmail());
@@ -75,6 +79,7 @@ public class HTTP_User_Controller {
     }
     @PostMapping("/verify")
     ResponseEntity<?> postUserVerification(@RequestBody PostUserVerificationJsonBody body){
+        App.logObjectAsJson(body);
         memo.getValid(body.validation);
         return ResponseEntity.ok().build();
     }
@@ -87,6 +92,7 @@ public class HTTP_User_Controller {
             @RequestBody PostUserGetJsonBody body
             //@RequestHeader("Authorization") String auth
     ){
+        App.logObjectAsJson(body);
         var user = memo.getValid(body.validation);
         return ResponseEntity.ok().body(user);
     }

@@ -1,5 +1,8 @@
 package org.rubilnik.auth_service.http_controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.rubilnik.auth_service.App;
 import org.rubilnik.auth_service.http_controllers.HTTP_User_Controller.UserValidationInfo;
 import org.rubilnik.auth_service.services.quizMemo.QuizMemoService;
 import org.rubilnik.auth_service.services.userMemo.UserMemoService;
@@ -26,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/quiz")
 @CrossOrigin("*")
 public class HTTP_Quiz_Controller {
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     QuizMemoService memo;
@@ -39,11 +44,9 @@ public class HTTP_Quiz_Controller {
     }
     @PostMapping()
     ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body) {
+        App.logObjectAsJson(body);
         var user = userMemo.getValid(body.validation);
         var quiz = user.createQuiz(null);
-        // without back reference from collection's objects
-        // @JsonBackReference does prevent infinite loops 
-        // but it doesnt link objects back
         quiz.updateFrom(body.quiz);
         for (var q : quiz.getQuestions()){
             quiz.addQuestion(q);
@@ -51,7 +54,6 @@ public class HTTP_Quiz_Controller {
                 q.addChoice(ch);
             }
         }
-        
         memo.save(quiz);
         return ResponseEntity.ok().body(quiz);
     }
@@ -62,6 +64,7 @@ public class HTTP_Quiz_Controller {
     }
     @PutMapping()
     ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body) {
+        App.logObjectAsJson(body);
         var quiz = memo.get(body.quiz.getId(), body.validation);
         quiz.updateFrom(body.quiz);
         quiz.setDateSaved(new Date());
@@ -75,6 +78,7 @@ public class HTTP_Quiz_Controller {
     }
     @DeleteMapping()
     ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body) {
+        App.logObjectAsJson(body);
         var quiz = memo.get(body.id, body.validation);
         memo.delete(quiz);
         return ResponseEntity.ok().build(); 

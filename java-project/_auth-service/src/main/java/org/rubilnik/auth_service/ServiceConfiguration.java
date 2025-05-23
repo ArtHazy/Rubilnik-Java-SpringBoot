@@ -1,5 +1,6 @@
 package org.rubilnik.auth_service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.context.annotation.Bean;

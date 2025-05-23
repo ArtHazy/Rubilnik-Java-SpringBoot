@@ -14,6 +14,21 @@ import java.util.NoSuchElementException;
 
 public class WS_EventHandler {
 
+    static class CreateRequest_Data{
+        public UserValidationInfo validation;
+        public Quiz quiz;
+        public Long questionId;
+    }
+    void create(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
+        var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, CreateRequest_Data.class);
+        if ( !App.validateUser(bodyData.validation) ) throw new WebSocketEventException("User validation failed");
+        var user = App.getUser(bodyData.validation);
+        var host = user.createRoom(bodyData.quiz);
+        WS_BinaryHandler.userConnections.put(session, host);
+        var msg = WS_ReplyFactory.onCreate(host.getRoom().getUsers());
+        WS_BinaryHandler.messageToUser_WS(host, msg);
+    }
+
     void reveal(WebSocketSession session) throws WebSocketEventException{
         var user = WS_BinaryHandler.userConnections.get1(session);
         if (!(user instanceof Host)) throw new WebSocketEventException("User is not a Host");
@@ -50,20 +65,7 @@ public class WS_EventHandler {
         WS_BinaryHandler.messageTo_WS(otherUsers, WS_ReplyFactory.onJoined(player.getId(), player.getName(), room.getUsers()));
     }
 
-    static class CreateRequest_Data{
-        public UserValidationInfo validation;
-        public Quiz quiz;
-        public Long questionId;
-    }
-    void create(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
-        var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, CreateRequest_Data.class);
-        if ( !App.validateUser(bodyData.validation) ) throw new WebSocketEventException("User validation failed");
-        var user = App.getUser(bodyData.validation);
-        var host = user.createRoom(bodyData.quiz);
-        WS_BinaryHandler.userConnections.put(session, host);
-        var msg = WS_ReplyFactory.onCreate(host.getRoom().getUsers());
-        WS_BinaryHandler.messageToUser_WS(host, msg);
-    }
+
     
     void bark(WebSocketSession session) throws WebSocketEventException{
         User user = null;

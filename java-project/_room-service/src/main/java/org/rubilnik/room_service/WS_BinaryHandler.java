@@ -18,9 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class WS_BinaryHandler extends BinaryWebSocketHandler {
     static BiMap<WebSocketSession, User> userConnections = new BiMap<WebSocketSession, User>();
-    
     static ObjectMapper objectMapper_Json = new ObjectMapper();
-
     WS_EventHandler eventHandler = new WS_EventHandler();
 
     static void messageTo_WS(Set<User> users, String message){
@@ -36,6 +34,23 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
         } catch (Exception e) {
             // TODO 
             System.out.println(e.getMessage());
+        }
+    }
+    EventMessageBody parseEventMessageBody(TextMessage message) throws WebSocketEventException{
+        var payload = message.getPayload();
+        System.out.println("Got websocket payload: " + payload);
+        try {
+            return objectMapper_Json.readValue(payload, EventMessageBody.class);
+        } catch (JsonProcessingException e) {
+            throw new WebSocketEventException("JsonProcessingException: incorrect json message body");
+        }
+    }
+    void handleWebSocketEventException(WebSocketSession session, WebSocketEventException e){
+        try {
+            System.err.println(e.getMessage());
+            session.sendMessage(new TextMessage(WS_ReplyFactory.onError(e.getMessage())));
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
         }
     }
 
@@ -83,25 +98,5 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
                 default: throw new WebSocketEventException("Invalid event:"+" '"+body.event+"'."+" Can't handle this event");
             }
         } catch (WebSocketEventException e) { handleWebSocketEventException(session, e); }
-    }
-
-    EventMessageBody parseEventMessageBody(TextMessage message) throws WebSocketEventException{
-        var payload = message.getPayload();
-        System.out.println("Got payload: " + payload);
-        System.out.println("");
-        try {
-            return objectMapper_Json.readValue(payload, EventMessageBody.class);
-        } catch (JsonProcessingException e) {
-            throw new WebSocketEventException("JsonProcessingException: incorrect json message body");
-        }
-    }
-
-    void handleWebSocketEventException(WebSocketSession session, WebSocketEventException e){
-        try {
-            System.err.println(e.getMessage());
-            session.sendMessage(new TextMessage(WS_ReplyFactory.onError(e.getMessage())));
-        } catch (Exception ex) { 
-            System.err.println(ex.getMessage());
-        }
     }
 }
