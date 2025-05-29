@@ -60,31 +60,28 @@ fun main() = singleWindowApplication (
             }
             Spacer(Modifier.size(16.dp))
             MyCentredRow {
-                Switch(
-                    checked = isStarted,
-                    onCheckedChange = { newState ->
-                        isStarted = newState
-                        if (isStarted==true){
-                            // TODO remove debug
-                            try {
-                                ServerSocket(8081).use {  }
-                                ServerSocket(8082).use {  }
-                                auth_service_port = "8081"
-                                room_service_port = "8082"
-                            } catch (e:IOException) {
-                                auth_service_port = myGetFreePort().toString()
-                                room_service_port = myGetFreePort().toString()
-                            }
-                            web_ui_service_port = auth_service_port+""
-                            myStartServices(auth_service_port,room_service_port, WifiNetData(encryption,ssid,password))
-                        } else {
-                            myStopServices()
-                            auth_service_port="null"
-                            room_service_port="null"
-                            web_ui_service_port="0"
+                MySwitch(isStarted, { newState ->
+                    isStarted = newState
+                    if (isStarted==true){
+                        // TODO remove debug
+                        try {
+                            ServerSocket(8081).use {  }
+                            ServerSocket(8082).use {  }
+                            auth_service_port = "8081"
+                            room_service_port = "8082"
+                        } catch (e:IOException) {
+                            auth_service_port = myGetFreePort().toString()
+                            room_service_port = myGetFreePort().toString()
                         }
+                        web_ui_service_port = auth_service_port+""
+                        myStartServices(auth_service_port,room_service_port, WifiNetData(encryption,ssid,password))
+                    } else {
+                        myStopServices()
+                        auth_service_port="null"
+                        room_service_port="null"
+                        web_ui_service_port="0"
                     }
-                )
+                }, 0.7f)
 //                Spacer(Modifier.size(8.dp))
             }
             AnimatedVisibility(isStarted){
