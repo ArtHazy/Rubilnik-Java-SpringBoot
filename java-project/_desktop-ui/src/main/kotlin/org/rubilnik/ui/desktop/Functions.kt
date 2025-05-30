@@ -74,11 +74,14 @@ fun myGetCurrentWifiNetData():WifiNetData {
                 reader.copyTo(writer)
             }
         }
-        val command = "sudo ${scriptPath}"
-        println("command: ${command}")
-        val process = ProcessBuilder(command)
-        val result = process.redirectOutput(ProcessBuilder.Redirect.PIPE).start().waitFor()
-        println("result ${result}")
+        //val command = listOf("sudo", scriptPath)// "sudo ${scriptPath}"
+        //println("command: ${command}")
+        val command = listOf("bash", scriptPath, logFilePath)
+        val process = ProcessBuilder(command).start()
+        val exitCode = process.waitFor()
+//        val process = ProcessBuilder("sudo", "-S", scriptPath, logFilePath)
+//        val result = process.inheritIO().start().waitFor()
+        println("result ${exitCode}")
         Thread.sleep(1000)
     } else {
         println("undef OS")
@@ -89,6 +92,7 @@ fun myGetCurrentWifiNetData():WifiNetData {
     if (lines.size>=3){
         val ssid = lines[0]
         val password = lines[1]
+        println("encryption: "+lines[2])
         var encryption = ""
         if (lines[2].contains("WPA")) encryption = "WPA"
         else if (lines[2].contains("WEP")) encryption = "WEP"
