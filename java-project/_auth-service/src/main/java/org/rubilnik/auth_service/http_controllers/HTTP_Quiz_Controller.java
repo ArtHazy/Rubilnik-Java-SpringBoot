@@ -3,7 +3,7 @@ package org.rubilnik.auth_service.http_controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rubilnik.auth_service.App;
-import org.rubilnik.auth_service.http_controllers.HTTP_User_Controller.UserValidationInfo;
+import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.auth_service.services.quizMemo.QuizMemoService;
 import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.rubilnik.core.quiz.Quiz;
@@ -31,15 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class HTTP_Quiz_Controller {
     @Autowired
     ObjectMapper objectMapper;
-
     @Autowired
     QuizMemoService memo;
-    // QuizRepository quizRepository;
     @Autowired
     UserMemoService userMemo;
 
     static class PostQuizJsonBody{ // contained values can be insuffient
-        public UserValidationInfo validation;
+        public Records.UserValidationInfo validation;
         public Quiz quiz; // not fully initialized
     }
     @PostMapping()
@@ -59,7 +57,7 @@ public class HTTP_Quiz_Controller {
     }
 
     static class PutQuizJsonBody{
-        public UserValidationInfo validation;
+        public Records.UserValidationInfo validation;
         public Quiz quiz;
     }
     @PutMapping()
@@ -73,7 +71,7 @@ public class HTTP_Quiz_Controller {
     }
 
     static class DeleteQuizJsonBody{
-        public UserValidationInfo validation;
+        public Records.UserValidationInfo validation;
         public long id;
     }
     @DeleteMapping()

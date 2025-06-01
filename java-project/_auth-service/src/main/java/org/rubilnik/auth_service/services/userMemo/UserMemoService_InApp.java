@@ -3,7 +3,7 @@ package org.rubilnik.auth_service.services.userMemo;
 import java.util.List;
 import java.util.Optional;
 
-import org.rubilnik.auth_service.http_controllers.HTTP_User_Controller.UserValidationInfo;
+import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -30,12 +30,12 @@ public class UserMemoService_InApp implements UserMemoService {
         return Optional.empty();
     }
     @Override
-    public User getValid(UserValidationInfo info) throws ResponseStatusException {
-        var opt = get(info.id, info.email);
+    public User getValid(Records.UserValidationInfo info) throws ResponseStatusException {
+        var opt = get(info.id(), info.email());
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No user with such ID's was found");
         var user = opt.get();
-        if ( !(info.email.equals(onlyValid.getEmail()) || info.id.equals(onlyValid.getId())) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user email");
-        if (!info.password.equals(user.getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
+        if ( !(info.email().equals(onlyValid.getEmail()) || info.id().equals(onlyValid.getId())) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user email");
+        if (!info.password().equals(user.getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
 
 //        if ( !passwordEncoder.matches(info.password,user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
 

@@ -1,22 +1,17 @@
 package org.rubilnik.auth_service.http_controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.jfr.ContentType;
 import org.rubilnik.auth_service.App;
 
+import org.rubilnik.auth_service.services.RegisterTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.NetworkInterface;
-import java.nio.file.Paths;
 
 
 @EnableAspectJAutoProxy
@@ -25,6 +20,10 @@ import java.nio.file.Paths;
 public class HTTP_Basic_Controller {
     @Autowired
     WebServerApplicationContext context;
+    @Autowired
+    RegisterTokenService registerTokenService;
+    @Value("${rubilnik.central-server.url}")
+    String centralServerUrl;
 
 //  React UI provider
     @GetMapping(value = { "/", "/login", "/register", "/edit-quiz/*", "/play", "/play/*", "/join"})

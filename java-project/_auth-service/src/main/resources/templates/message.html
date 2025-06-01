@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" style="height:100svh; background:#242424">
+<head>
+    <meta charset="UTF-8">
+    <title>Rubilnik</title>
+</head>
+<body style="height:100%; display: flex; flex-direction: column; justify-content:safe center; align-items:center; box-sizing:border-box; margin:0; padding:8px;">
+    <div class="message display" style="box-sizing:border-box; padding: 8px; background:#D0D0D0; border-radius:8px; min-height:20px; min-width:12em; width:100%; max-width:50vh">
+        <span th:text="${message}"></span>
+        <a th:href="${link}" th:text="${link}"></a>
+    </div>
+</body>
+</html>
