@@ -1,9 +1,11 @@
 package org.rubilnik.auth_service.http_controllers;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.rubilnik.auth_service.App;
 import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.auth_service.services.EmailService;
+import org.rubilnik.auth_service.services.UserHttpSessionTokenManager;
 import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,31 +21,29 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 // Using ResponceEntity at top level of controller mapping, using throw ResponceStatusException in submethods (not bothering with return), ResponceStatusException handled by controller
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class HTTP_User_Controller {
-
     @Autowired
     UserMemoService memo;
     @Autowired
     EmailService emailService;
     @Autowired
     Environment env;
-
-//    public static class UserValidationInfo{
-//        public String id,password,email;
-//    }
+    @Autowired
+    UserHttpSessionTokenManager userHttpSessionTokenManager;
 
     static class PostUserJsonBody{
         public User user;
     }
     @PostMapping()
-    ResponseEntity<String> postUser(@RequestBody PostUserJsonBody body) throws IOException {
+    ResponseEntity<String> postUser(@RequestBody PostUserJsonBody body, @CookieValue(value="Authorization", required=false) String token) throws IOException {
         if ( !env.matchesProfiles("server") ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only for central server profile");
 
         App.logObjectAsJson(body);
@@ -55,27 +55,39 @@ public class HTTP_User_Controller {
 
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body("Verify your email. Check your email for the verification link");
     }
-
-    static class DeleteUserJsonBody{
+    static class PostUserGetJsonBody{
         public Records.UserValidationInfo validation;
     }
-    @DeleteMapping()
-    ResponseEntity<?> deleteUser( /*Authentication auth,*/ @RequestBody DeleteUserJsonBody body){
+    @PostMapping("/login")
+    ResponseEntity<?> postUserGet(
+            @RequestBody PostUserGetJsonBody body,
+            HttpServletResponse res
+    ){
         App.logObjectAsJson(body);
         var user = memo.getValid(body.validation);
+        var token = userHttpSessionTokenManager.createToken(user.getId());
+        var cookie = new Cookie("Authorization",token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60*60);
+        res.addCookie(cookie);
+        return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping()
+    ResponseEntity<?> deleteUser( /*Authentication auth,*/ @CookieValue(value="Authorization", required=false) String token){
+        var user = memo.getValid(token);
         memo.delete(user);
         user.clearID();
         return ResponseEntity.ok().build();
     }
 
     static class PutUserJsonBody{
-        public Records.UserValidationInfo validation;
         public User user;
     }
     @PutMapping()
-    ResponseEntity<?> putUser(@RequestBody PutUserJsonBody body){
-        App.logObjectAsJson(body);
-        var user = memo.getValid(body.validation);
+    ResponseEntity<?> putUser(@RequestBody PutUserJsonBody body, @CookieValue(value="Authorization", required=false) String token){
+        var user = memo.getValid(token);
         user.setName(body.user.getName());
 //        user.setEmail(body.user.getEmail());
         user.setPassword(body.user.getPassword());
@@ -83,26 +95,9 @@ public class HTTP_User_Controller {
         return ResponseEntity.ok().build();
     }
 
-    static class PostUserVerificationJsonBody{
-        public Records.UserValidationInfo validation;
-    }
     @PostMapping("/verify")
-    ResponseEntity<?> postUserVerification(@RequestBody PostUserVerificationJsonBody body){
-        App.logObjectAsJson(body);
-        memo.getValid(body.validation);
+    ResponseEntity<?> postUserVerification(@CookieValue(value="Authorization", required=false) String token){
+        memo.getValid(token);
         return ResponseEntity.ok().build();
-    }
-
-    static class PostUserGetJsonBody{
-        public Records.UserValidationInfo validation;
-    }
-    @PostMapping("/get")
-    ResponseEntity<?> postUserGet(
-            @RequestBody PostUserGetJsonBody body
-            //@RequestHeader("Authorization") String auth
-    ){
-        App.logObjectAsJson(body);
-        var user = memo.getValid(body.validation);
-        return ResponseEntity.ok().body(user);
     }
 }

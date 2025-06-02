@@ -1,6 +1,5 @@
 package org.rubilnik.auth_service.services;
 
-import org.rubilnik.auth_service.http_controllers.HTTP_User_Controller;
 import org.rubilnik.auth_service.record_classes.Records;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,7 @@ public class EmailService {
     @Autowired
     JavaMailSender mailSender;
     @Autowired
-    RegisterTokenService registerTokenService;
+    UserRegisterEmailVerificationTokenService userRegisterEmailVerificationTokenService;
     @Value("${spring.mail.username}")
     String from;
     @Value("${rubilnik.central-server.url}")
@@ -24,7 +23,7 @@ public class EmailService {
 
     public void sendVerifyEmail(Records.UserValidationInfo info, String username) throws IllegalArgumentException {
         validate(info.email());
-        sendEmail(info.email(), "Rubilnik email verification", "Please click on the link below to verify your email\n"+centralServerUrl+"/verify?email="+info.email()+"&token="+registerTokenService.generateToken(username,info));
+        sendEmail(info.email(), "Rubilnik email verification", "Please click on the link below to verify your email\n"+centralServerUrl+"/verify?email="+info.email()+"&token="+ userRegisterEmailVerificationTokenService.generateToken(username,info));
     }
 
     private void sendEmail(String to, String subject, String text){

@@ -1,8 +1,6 @@
 package org.rubilnik.auth_service.services;
 
-import org.rubilnik.auth_service.http_controllers.HTTP_User_Controller;
 import org.rubilnik.auth_service.record_classes.Records;
-import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service @Profile("server")
-public class RegisterTokenService {
+public class UserRegisterEmailVerificationTokenService {
     @Autowired
     PasswordEncoder emailEncoder;
     // TODO token TimeToLive?
@@ -25,8 +24,10 @@ public class RegisterTokenService {
         tokens.put(info.email(), userTokenInfo);
         return token;
     }
-    public String getToken(String email){
-        return tokens.get(email).token();
+    public Optional<String> getToken(String email){
+        var tokenInfo = tokens.get(email);
+        if (tokenInfo==null) return Optional.empty();
+        return Optional.ofNullable(tokenInfo.token());
     }
     public Records.UserTokenInfo getUserTokenInfo(String email){
         return tokens.get(email);

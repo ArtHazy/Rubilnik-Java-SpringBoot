@@ -5,6 +5,7 @@ import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ public class ServiceConfiguration {
             // CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks a user's browser
             // into making a request to another site where the user is already authenticated (e.g., your app),
             // without their knowledge using user's cookie.
+                .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             // Post request processing
             .formLogin(form -> form.disable()

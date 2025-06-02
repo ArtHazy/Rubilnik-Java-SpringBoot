@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.auth_service.repositories.UserRepository;
+import org.rubilnik.auth_service.services.UserHttpSessionTokenManager;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +19,8 @@ public class UserMemoService_InDB implements UserMemoService {
     UserRepository dbRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    UserHttpSessionTokenManager tokenManager;
 
     @Override
     public void save(User user) {
@@ -51,5 +54,10 @@ public class UserMemoService_InDB implements UserMemoService {
     @Override
     public User getByName(String name) {
         return dbRepository.findByName(name).orElse(null);
+    }
+    @Override
+    public User getValid(String token) throws ResponseStatusException {
+        var id = tokenManager.getUserId(token).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid token provided."));
+        return dbRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"Can't find user associated with such token."));
     }
 }

@@ -2,7 +2,7 @@ package org.rubilnik.auth_service.http_controllers;
 
 import org.rubilnik.auth_service.App;
 
-import org.rubilnik.auth_service.services.RegisterTokenService;
+import org.rubilnik.auth_service.services.UserRegisterEmailVerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.context.WebServerApplicationContext;
@@ -16,12 +16,12 @@ import java.net.NetworkInterface;
 
 @EnableAspectJAutoProxy
 @Controller
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class HTTP_Basic_Controller {
     @Autowired
     WebServerApplicationContext context;
     @Autowired
-    RegisterTokenService registerTokenService;
+    UserRegisterEmailVerificationTokenService userRegisterEmailVerificationTokenService;
     @Value("${rubilnik.central-server.url}")
     String centralServerUrl;
 

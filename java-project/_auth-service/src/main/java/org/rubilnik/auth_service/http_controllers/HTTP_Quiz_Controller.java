@@ -14,36 +14,27 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import java.util.Date;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @RestController
 @RequestMapping("/quiz")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class HTTP_Quiz_Controller {
-    @Autowired
-    ObjectMapper objectMapper;
     @Autowired
     QuizMemoService memo;
     @Autowired
     UserMemoService userMemo;
 
     static class PostQuizJsonBody{ // contained values can be insuffient
-        public Records.UserValidationInfo validation;
         public Quiz quiz; // not fully initialized
     }
     @PostMapping()
-    ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body) {
+    ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
         App.logObjectAsJson(body);
-        var user = userMemo.getValid(body.validation);
+        var user = userMemo.getValid(token);
         var quiz = user.createQuiz(null);
         quiz.updateFrom(body.quiz);
         for (var q : quiz.getQuestions()){
@@ -57,13 +48,12 @@ public class HTTP_Quiz_Controller {
     }
 
     static class PutQuizJsonBody{
-        public Records.UserValidationInfo validation;
         public Quiz quiz;
     }
     @PutMapping()
-    ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body) {
+    ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
         App.logObjectAsJson(body);
-        var quiz = memo.get(body.quiz.getId(), body.validation);
+        var quiz = memo.get(body.quiz.getId(), userMemo.getValid(token));
         quiz.updateFrom(body.quiz);
         quiz.setDateSaved(new Date());
         memo.save(quiz);
@@ -71,13 +61,12 @@ public class HTTP_Quiz_Controller {
     }
 
     static class DeleteQuizJsonBody{
-        public Records.UserValidationInfo validation;
         public long id;
     }
     @DeleteMapping()
-    ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body) {
+    ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
         App.logObjectAsJson(body);
-        var quiz = memo.get(body.id, body.validation);
+        var quiz = memo.get(body.id, userMemo.getValid(token));
         memo.delete(quiz);
         return ResponseEntity.ok().build(); 
     }

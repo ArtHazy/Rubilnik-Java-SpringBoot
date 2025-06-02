@@ -10,6 +10,7 @@ public interface UserMemoService {
     void save(User user);
     Optional<User> get(String id, String email) throws ResponseStatusException;
     User getValid(Records.UserValidationInfo info) throws ResponseStatusException;
+    User getValid(String token) throws ResponseStatusException;
     Iterable<User> getAll();
     void delete(User user);
     User getByName(String name);

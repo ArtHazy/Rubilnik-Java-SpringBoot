@@ -3,6 +3,7 @@ package org.rubilnik.auth_service.services.quizMemo;
 import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.auth_service.repositories.QuizRepository;
 import org.rubilnik.core.quiz.Quiz;
+import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -34,5 +35,11 @@ public class QuizMemoService_InDB implements QuizMemoService {
     @Override
     public void delete(Quiz quiz) {
         dbRepository.delete(quiz);
+    }
+    @Override
+    public Quiz get(long id, User owner) throws ResponseStatusException {
+        var quiz = dbRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"Quiz with such id wasn't found."));
+        if (!quiz.getAuthor().getId().equals(owner.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid quiz owner.");
+        return quiz;
     }
 }
