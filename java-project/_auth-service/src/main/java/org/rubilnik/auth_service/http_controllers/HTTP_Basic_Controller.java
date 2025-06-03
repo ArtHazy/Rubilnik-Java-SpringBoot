@@ -1,12 +1,20 @@
 package org.rubilnik.auth_service.http_controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.rubilnik.auth_service.App;
 
+import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.auth_service.services.UserRegisterEmailVerificationTokenService;
+import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +51,25 @@ public class HTTP_Basic_Controller {
     }
 
     @ResponseBody()
+    @PostMapping("/hi")
+    String postGreeting(){
+        return App.getGreeting();
+    }
+    @ResponseBody()
+    @PostMapping("/hi/hi")
+    String postGreeting2(){
+        return App.getGreeting();
+    }
+
+    @ResponseBody()
     @GetMapping("/hi")
     String greeting() {
+        System.out.println("GET /hi request");
+        return App.getGreeting();
+    }
+
+    @GetMapping("/hello")
+    String greetingSecured() {
         System.out.println("GET /hi request");
         return App.getGreeting();
     }

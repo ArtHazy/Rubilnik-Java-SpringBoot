@@ -1,11 +1,8 @@
 package org.rubilnik.auth_service.http_controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rubilnik.auth_service.App;
-import org.rubilnik.auth_service.record_classes.Records;
+import org.rubilnik.auth_service.services.CurrentHttpSessionUserResolver;
 import org.rubilnik.auth_service.services.quizMemo.QuizMemoService;
-import org.rubilnik.auth_service.services.userMemo.UserMemoService;
 import org.rubilnik.core.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,15 +23,15 @@ public class HTTP_Quiz_Controller {
     @Autowired
     QuizMemoService memo;
     @Autowired
-    UserMemoService userMemo;
+    CurrentHttpSessionUserResolver clientResolver;
 
     static class PostQuizJsonBody{ // contained values can be insuffient
         public Quiz quiz; // not fully initialized
     }
     @PostMapping()
-    ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
+    ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body) {
         App.logObjectAsJson(body);
-        var user = userMemo.getValid(token);
+        var user = clientResolver.getCurrent();
         var quiz = user.createQuiz(null);
         quiz.updateFrom(body.quiz);
         for (var q : quiz.getQuestions()){
@@ -51,9 +48,9 @@ public class HTTP_Quiz_Controller {
         public Quiz quiz;
     }
     @PutMapping()
-    ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
+    ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body) {
         App.logObjectAsJson(body);
-        var quiz = memo.get(body.quiz.getId(), userMemo.getValid(token));
+        var quiz = memo.get(body.quiz.getId(), clientResolver.getCurrent());
         quiz.updateFrom(body.quiz);
         quiz.setDateSaved(new Date());
         memo.save(quiz);
@@ -64,9 +61,9 @@ public class HTTP_Quiz_Controller {
         public long id;
     }
     @DeleteMapping()
-    ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body, @CookieValue(value="Authorization", required=false) String token) {
+    ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body) {
         App.logObjectAsJson(body);
-        var quiz = memo.get(body.id, userMemo.getValid(token));
+        var quiz = memo.get(body.id, clientResolver.getCurrent());
         memo.delete(quiz);
         return ResponseEntity.ok().build(); 
     }

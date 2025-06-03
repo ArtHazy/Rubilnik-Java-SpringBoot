@@ -29,7 +29,7 @@ public class EmailService {
     private void sendEmail(String to, String subject, String text){
         System.out.println("Sending email to "+to+" with subject "+subject);
         System.out.println("Sending email from ["+from+"] to ["+to+"] with subject: "+subject);
-        var mail = new SimpleMailMessage();
+        var mail = new SimpleMailMessage(); // TODO MimeMessage mb with ThymeleafConfig @Bean TemplateEngine
         mail.setFrom(from);
         mail.setTo(to);
         mail.setSubject(subject);

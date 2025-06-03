@@ -1,4 +1,4 @@
-package org.rubilnik.auth_service;
+package org.rubilnik.auth_service.configs;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;

@@ -54,9 +54,4 @@ public class UserMemoService_InApp implements UserMemoService {
     public User getByName(String name) {
         return onlyValid;
     }
-
-    @Override
-    public User getValid(String token) throws ResponseStatusException {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This config doesn't allow tokens");
-    }
 }
