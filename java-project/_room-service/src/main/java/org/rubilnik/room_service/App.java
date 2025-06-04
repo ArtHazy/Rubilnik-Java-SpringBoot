@@ -1,11 +1,11 @@
 package org.rubilnik.room_service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rubilnik.core.users.User;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -21,11 +21,9 @@ public class App {
 
     private static RestClient auth_service_rest_client;
  
-    static boolean validateUser(UserValidationInfo info) {
+    static boolean validateUser(String token) {
         try {
-            var body = new PostUserVerificationJsonBody();
-            body.validation = info;
-            var res = auth_service_rest_client.post().uri("/user/verify").body(body).retrieve().toEntity(Object.class);
+            var res = auth_service_rest_client.post().uri("/user/verify").body(token).retrieve().toEntity(Object.class);
             return res.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -33,11 +31,11 @@ public class App {
             // TODO: handle exception
         }
     }
-    static User getUser(UserValidationInfo info) throws RestClientResponseException{
-        var body = new PostUserVerificationJsonBody();
-        body.validation = info;
-        var res = auth_service_rest_client.post().uri("/user/get").body(body).retrieve().toEntity(User.class);
-        return res.getBody();
+    static User resolveUser(String sessionId) throws RestClientResponseException{
+            return auth_service_rest_client.get()
+                    .uri("/user/validate")
+                    .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
+                    .retrieve().toEntity(User.class).getBody();
     }
 
     public static String getGreeting(){

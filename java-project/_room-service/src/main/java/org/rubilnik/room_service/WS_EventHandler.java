@@ -1,5 +1,6 @@
 package org.rubilnik.room_service;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.rubilnik.core.Room;
 import org.rubilnik.core.quiz.Quiz;
 import org.rubilnik.core.users.Host;
@@ -7,6 +8,8 @@ import org.rubilnik.core.users.Player;
 import org.rubilnik.core.users.User;
 import org.rubilnik.room_service.App.UserValidationInfo;
 import org.rubilnik.room_service.WS_BinaryHandler.EventMessageBody;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.NoSuchElementException;
@@ -15,14 +18,14 @@ import java.util.NoSuchElementException;
 public class WS_EventHandler {
 
     static class CreateRequest_Data{
-        public UserValidationInfo validation;
         public Quiz quiz;
         public Long questionId;
     }
     void create(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
+        String userSession = (String) session.getAttributes().get("rubilnik-user-session");
+        var user = App.resolveUser(userSession);
         var bodyData = WS_BinaryHandler.objectMapper_Json.convertValue(body.data, CreateRequest_Data.class);
-        if ( !App.validateUser(bodyData.validation) ) throw new WebSocketEventException("User validation failed");
-        var user = App.getUser(bodyData.validation);
+
         var host = user.createRoom(bodyData.quiz);
         WS_BinaryHandler.userConnections.put(session, host);
         var msg = WS_ReplyFactory.onCreate(host.getRoom().getUsers());
@@ -44,16 +47,20 @@ public class WS_EventHandler {
     static class JoinRequest_Data {
         public String name;
         public String roomId;
-        public UserValidationInfo validation;
+//        public UserValidationInfo validation;
     }
     void join(WebSocketSession session, EventMessageBody body) throws WebSocketEventException{
         var data = WS_BinaryHandler.objectMapper_Json.convertValue(body.data,JoinRequest_Data.class);
         var room = Room.getRoom(data.roomId);
         if (room==null) throw new WebSocketEventException("No room available with such id");
         User player;
-        if (App.validateUser(data.validation)){
-            player = App.getUser(data.validation).joinRoom(room);
-        } else {
+
+        try { // try user validation
+            String userSession = (String) session.getAttributes().get("rubilnik-user-session");
+            var user = App.resolveUser(userSession);
+            player = user.joinRoom(room);
+        } catch (HttpStatusCodeException e){ // else join as guest // TODO
+            System.out.println(e.getMessage());
             player = new Player(data.name,room);
         }
         WS_BinaryHandler.userConnections.put(session, player);

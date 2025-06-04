@@ -13,7 +13,7 @@ public class CurrentHttpSessionUserResolver {
     @Autowired
     UserMemoService memo;
 
-    public User getCurrent(){
+    public User getCurrent() throws ResponseStatusException{
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth==null||!auth.isAuthenticated()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         return memo.get(null, auth.getName()).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't find user with such email"));

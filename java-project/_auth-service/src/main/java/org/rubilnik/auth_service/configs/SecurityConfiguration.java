@@ -3,6 +3,7 @@ package org.rubilnik.auth_service.configs;
 import org.rubilnik.auth_service.services.UserValidationDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.net.http.HttpRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +31,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity (enable in production)
                 .authorizeHttpRequests(customizer->customizer
+                        .requestMatchers(HttpMethod.POST,"/user")
+                            .permitAll()
                         .requestMatchers("/public/**","/assets/**", "/templates/**", "/favicon.ico", "/login", "/register", "/verify", "/user/login", "/hi")
                             .permitAll()
                         .anyRequest()

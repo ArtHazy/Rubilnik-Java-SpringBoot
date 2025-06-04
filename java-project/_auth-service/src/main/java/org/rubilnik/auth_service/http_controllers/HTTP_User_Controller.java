@@ -110,14 +110,25 @@ public class HTTP_User_Controller {
         memo.save(user);
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/hi")
-    String hi(){
-        return "hi";
+    @GetMapping()
+    ResponseEntity<User> getUser(){
+        var user = clientResolver.getCurrent();
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/verify")
     ResponseEntity<?> postUserVerification(){
         clientResolver.getCurrent();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<User> validateToken() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        var user = clientResolver.getCurrent(); // resolve user from authentication
+        return ResponseEntity.ok(user);
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Component
 public class WS_BinaryHandler extends BinaryWebSocketHandler {
     static BiMap<WebSocketSession, User> userConnections = new BiMap<WebSocketSession, User>();
     static ObjectMapper objectMapper_Json = new ObjectMapper();

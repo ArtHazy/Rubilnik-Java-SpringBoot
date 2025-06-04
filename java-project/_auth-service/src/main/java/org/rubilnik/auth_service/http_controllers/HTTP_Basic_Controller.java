@@ -55,24 +55,6 @@ public class HTTP_Basic_Controller {
     String postGreeting(){
         return App.getGreeting();
     }
-    @ResponseBody()
-    @PostMapping("/hi/hi")
-    String postGreeting2(){
-        return App.getGreeting();
-    }
-
-    @ResponseBody()
-    @GetMapping("/hi")
-    String greeting() {
-        System.out.println("GET /hi request");
-        return App.getGreeting();
-    }
-
-    @GetMapping("/hello")
-    String greetingSecured() {
-        System.out.println("GET /hi request");
-        return App.getGreeting();
-    }
 
     String getLocalIP() {
         try {
