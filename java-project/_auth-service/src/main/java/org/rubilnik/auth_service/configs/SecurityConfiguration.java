@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(customizer->customizer
                         .requestMatchers(HttpMethod.POST,"/user")
                             .permitAll()
-                        .requestMatchers("/public/**","/assets/**", "/templates/**", "/favicon.ico", "/login", "/register", "/verify", "/user/login", "/hi")
+                        .requestMatchers("/public/**","/assets/**", "/templates/**", "/favicon.ico", "/login", "/register", "/verify", "/user/login", "/hi", "/join/**", "/play/**")
                             .permitAll()
                         .anyRequest()
                             .authenticated()
