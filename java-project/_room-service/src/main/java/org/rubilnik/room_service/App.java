@@ -31,6 +31,7 @@ public class App {
             // TODO: handle exception
         }
     }
+    // may return null
     static User resolveUser(String sessionId) throws RestClientResponseException{
             return auth_service_rest_client.get()
                     .uri("/user/validate")

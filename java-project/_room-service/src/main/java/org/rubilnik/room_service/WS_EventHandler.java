@@ -58,7 +58,12 @@ public class WS_EventHandler {
         try { // try user validation
             String userSession = (String) session.getAttributes().get("rubilnik-user-session");
             var user = App.resolveUser(userSession);
-            player = user.joinRoom(room);
+            if (user!=null){
+                player = user.joinRoom(room);
+            } else { // else join as guest
+                player = new Player(data.name,room);
+            }
+
         } catch (HttpStatusCodeException e){ // else join as guest // TODO
             System.out.println(e.getMessage());
             player = new Player(data.name,room);
