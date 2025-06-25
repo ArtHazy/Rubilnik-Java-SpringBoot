@@ -1,6 +1,6 @@
 package org.rubilnik.auth_service.services;
 
-import org.rubilnik.auth_service.services.userMemo.UserMemoService;
+import org.rubilnik.auth_service.services.userMemo.UserMemo;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class CurrentHttpSessionUserResolver {
     @Autowired
-    UserMemoService memo;
+    UserMemo memo;
 
     public User getCurrent() throws ResponseStatusException{
         var auth = SecurityContextHolder.getContext().getAuthentication();

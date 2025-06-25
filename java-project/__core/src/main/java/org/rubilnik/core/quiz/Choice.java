@@ -1,6 +1,6 @@
 package org.rubilnik.core.quiz;
 
-import org.rubilnik.core.Position2D;
+import org.rubilnik.core.utils.Position2D;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;

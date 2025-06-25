@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service @Profile("desktop")
-public class QuizMemoService_InApp implements QuizMemoService {
+public class QuizMemoService_InApp implements QuizMemo {
     Map<Long,Quiz> quizzes = new HashMap<>();
 
     private long quizIdManager=0;

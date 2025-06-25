@@ -13,22 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service @Profile("server")
-public class UserMemoService_InDB implements UserMemoService {
+public class UserMemoService_InDB implements UserMemo {
     @Autowired
-    UserRepository dbRepository;
+    UserRepository repository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder encoder;
 
     @Override
     public void save(User user) {
-        user.setPassword( passwordEncoder.encode(user.getPassword()) );
-        dbRepository.save(user);
+        user.setPassword( encoder.encode(user.getPassword()) );
+        repository.save(user);
     }
     @Override
     public Optional<User> get(String id, String email) throws ResponseStatusException {
         Optional<User> opt;
-        if (id!=null) opt = dbRepository.findById(id);
-        else if (email!=null) opt = dbRepository.findByEmail(email);
+        if (id!=null) opt = repository.findById(id);
+        else if (email!=null) opt = repository.findByEmail(email);
         else throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Request must contain User id or email");
         return opt;
     }
@@ -37,19 +37,19 @@ public class UserMemoService_InDB implements UserMemoService {
         var opt = get(info.id(), info.email());
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with such id wasn't found");
         var user = opt.get();
-        if ( !passwordEncoder.matches(info.password(),user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
+        if ( !encoder.matches(info.password(),user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
         return user;
     }
     @Override
     public Iterable<User> getAll() {
-        return dbRepository.findAll(); 
+        return repository.findAll();
     }
     @Override
     public void delete(User user) {
-        dbRepository.delete(user);
+        repository.delete(user);
     }
     @Override
     public User getByName(String name) {
-        return dbRepository.findByName(name).orElse(null);
+        return repository.findByName(name).orElse(null);
     }
 }

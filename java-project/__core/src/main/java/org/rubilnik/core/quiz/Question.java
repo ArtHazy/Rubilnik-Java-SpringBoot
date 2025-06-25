@@ -3,7 +3,7 @@ package org.rubilnik.core.quiz;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.rubilnik.core.Position2D;
+import org.rubilnik.core.utils.Position2D;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service @Profile("server")
-public class UserRegisterEmailVerificationTokenService {
+public class EmailVerificationTokenService {
     @Autowired
     PasswordEncoder emailEncoder;
     // TODO token TimeToLive?
     // key=email, value
     private final Map<String,Records.UserTokenInfo> tokens = new HashMap<>();
 
-    public String generateToken(String username, Records.UserValidationInfo info){
+    public String createAndStoreToken(String username, Records.UserValidationInfo info){
         var token = emailEncoder.encode(info.email());
         var userTokenInfo = new Records.UserTokenInfo(info.id(),info.email(),info.password(), username, token);
         tokens.put(info.email(), userTokenInfo);

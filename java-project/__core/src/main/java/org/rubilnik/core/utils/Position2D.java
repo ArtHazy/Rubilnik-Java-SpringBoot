@@ -1,4 +1,4 @@
-package org.rubilnik.core;
+package org.rubilnik.core.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

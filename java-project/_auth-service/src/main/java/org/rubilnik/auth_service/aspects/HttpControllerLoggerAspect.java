@@ -9,11 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
-public class HTTP_Controller_LoggerAspect {
-    
+public class HttpControllerLoggerAspect {
     @Autowired
     private HttpServletRequest request;
-
     @Before("execution(* org.rubilnik.auth_service.http_controllers.*.*(..))")
     void log(){
         System.out.println(request.getMethod()+" request received for "+request.getRequestURI());

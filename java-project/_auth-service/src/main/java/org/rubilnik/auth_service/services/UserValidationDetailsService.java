@@ -1,16 +1,15 @@
 package org.rubilnik.auth_service.services;
 
-import org.rubilnik.auth_service.services.userMemo.UserMemoService;
+import org.rubilnik.auth_service.services.userMemo.UserMemo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 public class UserValidationDetailsService implements UserDetailsService {
     @Autowired
-    UserMemoService memo;
+    UserMemo memo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

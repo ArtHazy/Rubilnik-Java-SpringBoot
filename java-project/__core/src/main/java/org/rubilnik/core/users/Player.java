@@ -1,6 +1,6 @@
 package org.rubilnik.core.users;
 
-import org.rubilnik.core.IdManager;
+import org.rubilnik.core.utils.IdManager;
 import org.rubilnik.core.Room;
 import org.rubilnik.core.quiz.Question;
 

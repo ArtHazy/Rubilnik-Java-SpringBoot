@@ -2,7 +2,7 @@ package org.rubilnik.auth_service.http_controllers;
 
 import org.rubilnik.auth_service.App;
 import org.rubilnik.auth_service.services.CurrentHttpSessionUserResolver;
-import org.rubilnik.auth_service.services.quizMemo.QuizMemoService;
+import org.rubilnik.auth_service.services.quizMemo.QuizMemo;
 import org.rubilnik.core.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,15 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/quiz")
 //@CrossOrigin("*")
-public class HTTP_Quiz_Controller {
+public class HttpQuizController {
     @Autowired
-    QuizMemoService memo;
+    QuizMemo memo;
     @Autowired
     CurrentHttpSessionUserResolver clientResolver;
 
-    static class PostQuizJsonBody{ // contained values can be insuffient
-        public Quiz quiz; // not fully initialized
-    }
+    record PostQuizJsonBody(Quiz quiz/*not fully initialized*/){};
     @PostMapping()
     ResponseEntity<?> postQuiz(@RequestBody PostQuizJsonBody body) {
         App.logObjectAsJson(body);
@@ -41,12 +39,10 @@ public class HTTP_Quiz_Controller {
             }
         }
         memo.save(quiz);
-        return ResponseEntity.ok().body(quiz);
+        return ResponseEntity.ok(quiz);
     }
 
-    static class PutQuizJsonBody{
-        public Quiz quiz;
-    }
+    record PutQuizJsonBody(Quiz quiz){};
     @PutMapping()
     ResponseEntity<?> putQuiz(@RequestBody PutQuizJsonBody body) {
         App.logObjectAsJson(body);
@@ -54,12 +50,10 @@ public class HTTP_Quiz_Controller {
         quiz.updateFrom(body.quiz);
         quiz.setDateSaved(new Date());
         memo.save(quiz);
-        return ResponseEntity.ok().body(quiz); 
+        return ResponseEntity.ok(quiz);
     }
 
-    static class DeleteQuizJsonBody{
-        public long id;
-    }
+    record DeleteQuizJsonBody(long id){};
     @DeleteMapping()
     ResponseEntity<?> deleteQuiz(@RequestBody DeleteQuizJsonBody body) {
         App.logObjectAsJson(body);

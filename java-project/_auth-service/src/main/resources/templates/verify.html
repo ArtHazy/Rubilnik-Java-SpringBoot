@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Верификация - Rubilnik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Russo One';
+        }
+        
+        body {
+            height: 100vh;
+            background: #242424;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #D9D9D9;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+            linear-gradient(to right, rgba(0,0,0,0.03) 10px, transparent 10px),
+            linear-gradient(to bottom, rgba(0,0,0,0.03) 10px, transparent 10px);
+            background-size: 20px 20px;
+            background-blend-mode: multiply;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            /* z-index: 1; */
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #242424;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header {
+            background: #709B95;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            animation: shine 3s infinite;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .message-container {
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .message {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(40, 40, 40, 0.7);
+            color: #d9d9d9;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            animation: 
+                slideIn 0.5s ease-out forwards;
+        }
+        
+        .success {
+            border-left: 4px solid #3B765A;
+            background: rgba(59, 118, 90, 0.1);
+        }
+        
+        .warning {
+            border-left: 4px solid #D6BF81;
+            background: rgba(214, 191, 129, 0.1);
+        }
+        
+        .error {
+            border-left: 4px solid #B83B5E;
+            background: rgba(184, 59, 94, 0.1);
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #525252;
+        }
+        
+        .link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: transparent;
+            color: #d6bf81;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            
+            outline: 2px solid #d6bf81;
+            outline-offset: -2px;
+            transition: 
+                outline-width 0.3s,
+                outline-offset 0.3s;
+        }
+        
+        .link:hover {
+            outline-offset: -4px;
+            outline-width: 3px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            background: rgba(112, 155, 149, 0.1);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.8);
+            font-size: 0.9rem;
+            color: #727272;
+            border-top: 1px solid #525252;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-part-1 {
+            color: #0FD4CD;
+        }
+        
+        .logo-part-2 {
+            color: #d6bf81;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #525252;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+            will-change: width; /* Подсказка браузеру для оптимизации */
+            transform: translateZ(0); /* Аппаратное ускорение */
+        }
+        
+        .progress {
+            height: 100%;
+            background: #709B95; 
+            border-radius: 3px;
+            width: 100%;
+            transition: width 1s linear;
+        }
+        
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                transform: translateY(20px); 
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1;
+            }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @media (max-width: 480px) {
+            .message {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .link {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .status-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>    
+    <div class="container">
+        <div class="header">
+            <h1>Верификация аккаунта</h1>
+        </div>
+        
+        <div class="message-container">
+            <div class="status-icon">🔒</div>
+            
+            <div class="message" id="messageDisplay">
+                Идет проверка токена верификации...
+            </div>
+            
+            <div class="timer" id="timer">
+                Ожидание: <span id="countdown">3</span> сек
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            
+            <a th:href="${link}" href="http://rubilnik.ddns.net/login" class="link" id="actionLink" style="display: none;">
+                Перейти на страницу входа
+            </a>
+        </div>
+        
+        <div class="footer">
+            <div class="logo">
+                <span class="logo-part-1">РУБИЛЬ</span><span class="logo-part-2">НИК</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Элементы страницы
+        const messageDisplay = document.getElementById('messageDisplay');
+        const countdownElement = document.getElementById('countdown');
+        const progressBar = document.getElementById('progressBar');
+        const timerElement = document.getElementById('timer');
+        const actionLink = document.getElementById('actionLink');
+        const statusIcon = document.querySelector('.status-icon');
+
+        let serverLink
+
+        <!-- comment for raw html preview -->
+        const status = [[${status}]];
+        const msg = [[${message}]];
+        serverLink = [[${link}]];
+        <!--  -->
+
+        // Функция для обновления сообщения и поведения страницы
+        function updatePage(message, status) {
+            // Обновляем текст сообщения
+            messageDisplay.textContent = message;
+            
+            // Удаляем все предыдущие классы
+            messageDisplay.className = 'message';
+            
+            // Устанавливаем соответствующий стиль
+            if (status === 'success') {
+                messageDisplay.classList.add('success');
+                timerElement.textContent = 'Автоматическое перенаправление через: ';
+                actionLink.style.display = 'inline-block';
+                statusIcon.textContent = '✅';
+                statusIcon.style.color = '#3B765A';
+            } else if (status === 'error') {
+                messageDisplay.classList.add('error');
+                timerElement.textContent = 'Окно закроется через: ';
+                actionLink.style.display = 'none';
+                statusIcon.textContent = '❌';
+                statusIcon.style.color = '#B83B5E';
+            } else {
+                messageDisplay.classList.add('warning');
+                timerElement.textContent = 'Окно закроется через: ';
+                actionLink.style.display = 'none';
+                statusIcon.textContent = '⚠️';
+                statusIcon.style.color = '#D6BF81';
+            }
+            
+            // Сбрасываем таймер
+            resetTimer(status);
+        }
+        
+        // Таймер
+        let countdown;
+        let secondsLeft;
+        
+        function resetTimer(status) {
+            clearInterval(countdown);
+            
+            secondsLeft = status === 'success' ? 3 : 5;
+            countdownElement.textContent = secondsLeft;
+            
+            countdown = setInterval(() => {
+                secondsLeft--;
+                countdownElement.textContent = secondsLeft;
+                
+                // Обновляем прогресс-бар
+                const percent = (secondsLeft / (status === 'success' ? 3 : 5)) * 100;
+                progressBar.style.width = percent + '%';
+                
+                if (secondsLeft < 0) {
+                    clearInterval(countdown);
+
+
+                    if (status === 'success') {
+                        // Перенаправление на страницу входа
+                        window.location.href = serverLink || 'http://rubilnik.ddns.net/login';
+                    } else {
+                        // Закрытие окна
+                        timerElement.textContent = 'Закрытие окна...';
+                        setTimeout(() => {
+                            // Пытаемся закрыть окно
+                            try {
+                                window.close();
+                            } catch (e) {
+                                // Если не получилось, показываем сообщение
+                                document.querySelector('.container').innerHTML = `
+                                    <div style="padding: 50px; text-align: center;">
+                                        <div class="message warning" style="margin-bottom: 20px;">
+                                            Это окно может быть закрыто только вручную
+                                        </div>
+                                        <div class="timer">Пожалуйста, закройте эту вкладку</div>
+                                    </div>
+                                `;
+                            }
+                        }, 1000);
+                    }
+                }
+            }, 1000);
+        }
+        
+        // Обработка загрузки
+        window.addEventListener('load', function() {
+            // Пытаемся получить статус из URL
+            const urlParams = new URLSearchParams(window.location.search);
+
+
+
+            let message, statusType;
+
+            message = "Идет проверка токена верификации...";
+            statusType = 'warning';
+
+            setTimeout(() => {
+                if (status === 'success') {
+                    statusType = 'success';
+                    updatePage(msg, status);
+                } else if (status === 'error') {
+                    statusType = 'error';
+                    updatePage(msg, status);
+                } else if (status === 'warning') {
+                    statusType = 'warning';
+                    updatePage(msg, status);
+                } else { // preview
+                    statusType = 'success';
+                    updatePage("Успешно! Ваш аккаунт активирован", 'success');
+                }
+            }, 2000);
+
+            // Обновляем страницу с новым сообщением
+            updatePage(message, statusType);
+        });
+    </script>
+</body>
+</html>

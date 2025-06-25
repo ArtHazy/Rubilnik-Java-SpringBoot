@@ -4,9 +4,8 @@ import java.util.Set;
 
 import org.rubilnik.core.users.Host;
 import org.rubilnik.core.users.User;
-import org.rubilnik.core.BiMap;
+import org.rubilnik.core.utils.BiMap;
 import org.rubilnik.core.users.Player;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -15,10 +14,10 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WS_BinaryHandler extends BinaryWebSocketHandler {
+public class WSBinaryHandler extends BinaryWebSocketHandler {
     static BiMap<WebSocketSession, User> userConnections = new BiMap<WebSocketSession, User>();
     static ObjectMapper objectMapper_Json = new ObjectMapper();
-    WS_EventHandler eventHandler = new WS_EventHandler();
+    WSEventHandler eventHandler = new WSEventHandler();
 
     static void messageTo_WS(Set<User> users, String message){
         for (User user : users){
@@ -47,7 +46,7 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
     void handleWebSocketEventException(WebSocketSession session, WebSocketEventException e){
         try {
             System.err.println(e.getMessage());
-            session.sendMessage(new TextMessage(WS_ReplyFactory.onError(e.getMessage())));
+            session.sendMessage(new TextMessage(WSReplyFactory.onError(e.getMessage())));
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -64,11 +63,9 @@ public class WS_BinaryHandler extends BinaryWebSocketHandler {
                 }
             }
             var room = user.leaveRoom();
-            messageTo_WS(room.getUsers(), WS_ReplyFactory.onLeft(user.getId(), user.getName(), room.getUsers()) );
+            messageTo_WS(room.getUsers(), WSReplyFactory.onLeft(user.getId(), user.getName(), room.getUsers()) );
         } catch (Exception e) { System.out.println(e.getMessage());}
-
         userConnections.remove1(session);
-
         super.afterConnectionClosed(session, status);
     }
     @Override

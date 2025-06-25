@@ -1,4 +1,4 @@
-package org.rubilnik.core;
+package org.rubilnik.core.utils;
 
 import java.util.HashMap;
 import java.util.Map;

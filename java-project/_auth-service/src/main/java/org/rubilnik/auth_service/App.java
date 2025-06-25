@@ -2,7 +2,7 @@ package org.rubilnik.auth_service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.rubilnik.auth_service.services.userMemo.UserMemoService;
+import org.rubilnik.auth_service.services.userMemo.UserMemo;
 import org.rubilnik.core.users.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +17,7 @@ public class App {
         var context = SpringApplication.run(App.class, args);
         var env = context.getEnvironment();
         // get and check existing id's from memory
-        var userMemo = context.getBean(UserMemoService.class);
+        var userMemo = context.getBean(UserMemo.class);
         if (env.matchesProfiles("server")){
             var users = userMemo.getAll();
             users.forEach((u)->{

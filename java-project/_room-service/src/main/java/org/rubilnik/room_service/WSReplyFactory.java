@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map.Entry;
 
 @SuppressWarnings("unused")
-public class WS_ReplyFactory {
+public class WSReplyFactory {
 
     static class WS_EventMessage{
         private String event;

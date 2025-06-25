@@ -12,33 +12,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service @Profile("server")
-public class QuizMemoService_InDB implements QuizMemoService {
+public class QuizMemoService_InDB implements QuizMemo {
 
     @Autowired
-    QuizRepository dbRepository;
+    QuizRepository repository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder encoder;
 
     @Override
     public void save(Quiz quiz) {
-        dbRepository.save(quiz);
+        repository.save(quiz);
     }
     @Override
     public Quiz get(long id, Records.UserValidationInfo validation) {
-        var opt = dbRepository.findById(id);
+        var opt = repository.findById(id);
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Quiz with such id wasn't found");
         var quiz = opt.get();
         if (!quiz.getAuthor().getId().equals(validation.id())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid quiz owner");
-        if (!passwordEncoder.matches(validation.password(), quiz.getAuthor().getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid user password");
+        if (!encoder.matches(validation.password(), quiz.getAuthor().getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid user password");
         return quiz;
     }
     @Override
     public void delete(Quiz quiz) {
-        dbRepository.delete(quiz);
+        repository.delete(quiz);
     }
     @Override
     public Quiz get(long id, User owner) throws ResponseStatusException {
-        var quiz = dbRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"Quiz with such id wasn't found."));
+        var quiz = repository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"Quiz with such id wasn't found."));
         if (!quiz.getAuthor().getId().equals(owner.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid quiz owner.");
         return quiz;
     }

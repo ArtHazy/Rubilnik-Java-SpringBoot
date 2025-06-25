@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service @Profile("desktop")
-public class UserMemoService_InApp implements UserMemoService {
+public class UserMemoService_InApp implements UserMemo {
     @Autowired
     PasswordEncoder passwordEncoder;
     User onlyValid = new User("admin", "admin", "admin" /*passwordEncoder.encode("admin")*/);

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
-public class HTTP_Controller {
+public class HttpTestController {
     @GetMapping("/hi")
     String greeting() {
         System.out.println("GET /hi request");

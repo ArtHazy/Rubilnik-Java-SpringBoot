@@ -20,28 +20,19 @@ public class App {
     }
 
     private static RestClient auth_service_rest_client;
- 
-    static boolean validateUser(String token) {
-        try {
-            var res = auth_service_rest_client.post().uri("/user/verify").body(token).retrieve().toEntity(Object.class);
-            return res.getStatusCode().is2xxSuccessful();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
-            // TODO: handle exception
-        }
-    }
+
     // may return null
     static User resolveUser(String sessionId) throws RestClientResponseException{
-            return auth_service_rest_client.get()
-                    .uri("/user/validate")
-                    .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
-                    .retrieve().toEntity(User.class).getBody();
+        return auth_service_rest_client.get()
+            .uri("/user/validate")
+            .header(HttpHeaders.COOKIE, "JSESSIONID=" + sessionId)
+            .retrieve().toEntity(User.class).getBody();
     }
 
     public static String getGreeting(){
         return "Hello room service!";
     }
+
     public static void main(String[] args) {
         var context = SpringApplication.run(App.class, args);
         var env = context.getEnvironment();

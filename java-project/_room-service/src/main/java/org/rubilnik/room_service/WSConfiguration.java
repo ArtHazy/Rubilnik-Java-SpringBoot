@@ -12,13 +12,13 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @ComponentScan("org.rubilnik.room_service")
 @EnableWebSocket
 @EnableAspectJAutoProxy
-public class WS_Configuration implements WebSocketConfigurer {
+public class WSConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
-                .addHandler(new WS_BinaryHandler(), "/ws").setAllowedOrigins("*")
-                .addInterceptors(new WS_Interceptor());
+                .addHandler(new WSBinaryHandler(), "/ws").setAllowedOrigins("*")
+                .addInterceptors(new WSInterceptor());
     }
 
 }

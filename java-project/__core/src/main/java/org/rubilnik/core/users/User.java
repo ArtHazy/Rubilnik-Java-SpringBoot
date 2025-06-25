@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.rubilnik.core.IdManager;
+import org.rubilnik.core.utils.IdManager;
 import org.rubilnik.core.Room;
 import org.rubilnik.core.quiz.Quiz;
 import org.rubilnik.core.quiz.Question;

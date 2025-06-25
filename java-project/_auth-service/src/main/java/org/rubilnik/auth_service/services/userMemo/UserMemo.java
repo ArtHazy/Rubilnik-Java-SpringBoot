@@ -6,7 +6,7 @@ import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.core.users.User;
 import org.springframework.web.server.ResponseStatusException;
 
-public interface UserMemoService {
+public interface UserMemo {
     void save(User user);
     Optional<User> get(String id, String email) throws ResponseStatusException;
     User getValid(Records.UserValidationInfo info) throws ResponseStatusException;

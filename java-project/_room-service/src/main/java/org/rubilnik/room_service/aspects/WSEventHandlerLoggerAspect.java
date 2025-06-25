@@ -8,7 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 @Aspect
 @Component
-public class WS_EventHandler_LoggerAspect {
+public class WSEventHandlerLoggerAspect {
 
     // @Autowired
     // WebSocketSession session; 

@@ -44,25 +44,20 @@ fun myGetFreePort():Int {
 // Operating system specific
 data class WifiNetData (val encryption:String, val ssid:String, val password:String)
 fun myGetCurrentWifiNetData():WifiNetData {
-    println("getCurrentWifiNetData()")
     var os_name = System.getProperty("os.name")
     val logFile = File.createTempFile("logFile",".txt")
     val logFilePath = logFile.absolutePath //"C:\\Users\\artem\\OneDrive\\Desktop\\logFile.txt"
     // if Windows
     if (os_name.contains("Win")){
-        println("   os: windows")
         val scriptTempFile = File.createTempFile("wifi-win",".ps1")
         val scriptPath = scriptTempFile.absolutePath
         Global::class.java.getResourceAsStream("/native-scripts/wifi-win.ps1").bufferedReader().use { reader ->
-            scriptTempFile.writer().use { writer ->
-                reader.copyTo(writer)
-            }
+            scriptTempFile.writer().use { writer -> reader.copyTo(writer) }
         }
         val command = "Start-Process powershell.exe -ArgumentList '-File \"${scriptPath}\" -logFile \"${logFilePath}\"' -Verb RunAs"
         val process = ProcessBuilder("powershell.exe","-Command",command)
         val result = process.redirectOutput(ProcessBuilder.Redirect.PIPE).start().waitFor()
-        println("   result ${result}")
-        Thread.sleep(1000)
+        // Thread.sleep(1000)
     }
     // if MacOS
     else if (os_name.contains("Mac")) { // TODO

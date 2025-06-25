@@ -30,6 +30,7 @@ public class SecurityConfiguration {
         return filterConfig
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity (enable in production)
+                .formLogin(FormLoginConfigurer::disable)
                 .authorizeHttpRequests(customizer->customizer
                         .requestMatchers(HttpMethod.POST,"/user")
                             .permitAll()
@@ -43,26 +44,13 @@ public class SecurityConfiguration {
                                 res.sendRedirect("/login"))
                 )
                 //disable to use custom POST /login endpoint with Authentication and SecurityContextHolder
-                .formLogin(FormLoginConfigurer::disable)
+
                 .logout(customizer->customizer
                         .logoutUrl("/logout")
                         .logoutSuccessHandler((req, res, auth) -> res.sendRedirect("/login"))
                 )
                 .build();
-
-//                // CSRF (Cross-Site Request Forgery) is an attack where a malicious website tricks a user's browser
-//                // into making a request to another site where the user is already authenticated (e.g., your app),
-//                // without their knowledge using user's cookie.
-
-//                // Check for "Authorization: Basic <token>" http header
-//                .httpBasic(httpBasic -> {})
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//        UserDetails user = User.withUsername("user").password(passwordEncoder().encode("user")).roles("USER").build();
-//        return new InMemoryUserDetailsManager(admin,user);
-//    }
     @Bean
     UserValidationDetailsService userValidationDetailsService(){
         return new UserValidationDetailsService();
