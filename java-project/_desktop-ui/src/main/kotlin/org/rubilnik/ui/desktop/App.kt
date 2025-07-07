@@ -24,20 +24,31 @@ import java.awt.Desktop
 import java.io.IOException
 import java.net.ServerSocket
 import java.net.URI
+import java.util.Locale
 import java.util.Optional
+import java.util.ResourceBundle
 
 
 //
 
 
+
+
+val locale_en = Locale("en","EN")
+val locale_ru = Locale("ru","RU")
+val locale =  if (Locale.getDefault().language.equals("ru")) locale_ru else locale_en
+
+val bundle = ResourceBundle.getBundle("text", locale, ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
+
 object Global {
     var lanQrString: Optional<String> = Optional.empty<String>();
+//    val bundle: ResourceBundle =
 }
 
 var auth_service_process: Process? = null
 var room_service_process: Process? = null
 fun main() = singleWindowApplication (
-    title = "Rubilnik Launcher",
+    title = bundle.getString("Rubilnik_Launcher"),
     icon = BitmapPainter(useResource("icons/app-icon.png", ::loadImageBitmap))// ("app-icon.png") //BitmapPainter( loadImageBitmap() //File("./src/main/resources/app-icon.png").inputStream()) )
 )   {
     var web_ui_service_port by remember { mutableStateOf("null") }
@@ -55,8 +66,8 @@ fun main() = singleWindowApplication (
     MyMaterialTheme{
         Column (Modifier.fillMaxSize().background(myColorBGDark), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
             MyCentredRow {
-                myTextSplit1("RUBIL")
-                myTextSplit2("NIK")
+                myTextSplit1(bundle.getString("RUBIL"))
+                myTextSplit2(bundle.getString("NIK"))
             }
             Spacer(Modifier.size(16.dp))
             MyCentredRow {
@@ -88,14 +99,14 @@ fun main() = singleWindowApplication (
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     //TextField(enabled = false, label = {Text("web-ui-service-port")}, singleLine = true, value = web_ui_service_port, onValueChange = { web_ui_service_port = it }, modifier = myTextFieldModifier )
                     MyCentredRow {
-                        Text("started on port:", style =  myTypography.h5, modifier = Modifier.padding(8.dp))
+                        Text(bundle.getString("started_on_port"), style =  myTypography.h5, modifier = Modifier.padding(8.dp))
                         Text(web_ui_service_port, style = myTypography.h5, color = myColorYellowLight)
                     }
                     MyCentredRow {
                         Button(onClick = {
                             if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI("http://localhost:${web_ui_service_port}"))
                         }) {
-                            Text("Open")
+                            Text(bundle.getString("open"))
                         }
                     }
                 }

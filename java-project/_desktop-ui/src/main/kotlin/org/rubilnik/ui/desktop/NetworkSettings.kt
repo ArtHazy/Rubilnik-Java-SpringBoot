@@ -23,12 +23,13 @@ fun networkSettings() {
         var password by remember { mutableStateOf("") }
         var qrstr by remember { mutableStateOf(Optional.of("")) }
 
+
 //        Text("Network settings", )
 
-        Text("Network settings", style = myTypography.h5, modifier = Modifier.padding(8.dp))
-        MyTextField(label = { Text("encryption") }, value = encryption, onValueChange = {encryption=it})
-        MyTextField(label = { Text("name") }, value = ssid, onValueChange = {ssid=it})
-        MyTextField(label = { Text("password") }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation())
+        Text(bundle.getString("network_settings"), style = myTypography.h5, modifier = Modifier.padding(8.dp))
+        MyTextField(label = { Text(bundle.getString("encryption")) }, value = encryption, onValueChange = {encryption=it})
+        MyTextField(label = { Text(bundle.getString("name")) }, value = ssid, onValueChange = {ssid=it})
+        MyTextField(label = { Text(bundle.getString("password")) }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation())
         MyCentredRow(modifier = Modifier.fillMaxWidth()){
             Button(onClick = {
                 val (encryption_, ssid_, password_) = myGetCurrentWifiNetData()
@@ -38,7 +39,7 @@ fun networkSettings() {
                 qrstr=Optional.of("WIFI:T:${encryption};S:${ssid};P:${password};H:false;;")
                 Global.lanQrString=qrstr
             }) {
-                Text("Use current network")
+                Text(bundle.getString("use_current_network"))
             }
         }
     }
