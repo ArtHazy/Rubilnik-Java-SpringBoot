@@ -22,7 +22,7 @@ public class Host extends User {
         checkRoomForNull();
         return room.start(id);
     }
-    public List<Entry<Player, Integer>> endRoom() throws RuntimeException{
+    public List<Entry<Player, Float>> endRoom() throws RuntimeException{
         checkRoomForNull();
         return room.end();
     }

@@ -55,9 +55,9 @@ fun main() = singleWindowApplication (
     var auth_service_port by remember { mutableStateOf("null") }
     var room_service_port by remember { mutableStateOf("null") }
     var isStarted by remember { mutableStateOf(false) }
-    var encryption by remember { mutableStateOf("") }
-    var ssid by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+//    var encryption by remember { mutableStateOf("") }
+//    var ssid by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
 
     window.minimumSize = Dimension(300,300)
     window.maximumSize = Dimension(450,450)
@@ -85,7 +85,7 @@ fun main() = singleWindowApplication (
                             room_service_port = myGetFreePort().toString()
                         }
                         web_ui_service_port = auth_service_port+""
-                        myStartServices(auth_service_port,room_service_port, WifiNetData(encryption,ssid,password))
+                        myStartServices(auth_service_port,room_service_port)
                     } else {
                         myStopServices()
                         auth_service_port="null"
@@ -104,7 +104,7 @@ fun main() = singleWindowApplication (
                     }
                     MyCentredRow {
                         Button(onClick = {
-                            if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI("http://localhost:${web_ui_service_port}"))
+                            if (Desktop.isDesktopSupported()) Desktop.getDesktop().browse(URI("http://${getLocalIP()}:${web_ui_service_port}"))
                         }) {
                             Text(bundle.getString("open"))
                         }

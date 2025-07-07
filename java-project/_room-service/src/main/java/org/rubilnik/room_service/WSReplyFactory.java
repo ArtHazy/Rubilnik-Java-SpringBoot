@@ -69,14 +69,14 @@ public class WSReplyFactory {
         }).toString();
     }
 
-    public static String onEnd(List<Entry<Player, Integer>> scores) {
+    public static String onEnd(List<Entry<Player, Float>> scores) {
 
         var sscoress = new ArrayList<Object>();
         scores.forEach((entry)->{
             sscoress.add(new Object(){
                 public String id = entry.getKey().getId();
                 public String name = entry.getKey().getName();
-                public Integer score = entry.getValue();
+                public Float score = entry.getValue();
             });
         });
 

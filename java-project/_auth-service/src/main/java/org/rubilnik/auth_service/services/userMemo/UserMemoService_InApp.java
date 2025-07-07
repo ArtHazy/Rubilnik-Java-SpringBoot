@@ -3,6 +3,7 @@ package org.rubilnik.auth_service.services.userMemo;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.annotation.PostConstruct;
 import org.rubilnik.auth_service.record_classes.Records;
 import org.rubilnik.core.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserMemoService_InApp implements UserMemo {
     @Autowired
     PasswordEncoder passwordEncoder;
-    User onlyValid = new User("admin", "admin", "admin" /*passwordEncoder.encode("admin")*/);
+
+    User onlyValid;
+    @PostConstruct
+    void init(){
+        onlyValid = new User("admin", "admin", passwordEncoder.encode("admin"));
+    }
+
     @Override
     public void save(User user) {
         if (!user.getId().equals(onlyValid.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only one user allowed");
-//        user.setPassword( passwordEncoder.encode(user.getPassword()) );
+        user.setPassword( passwordEncoder.encode(user.getPassword()) );
         onlyValid = user;
     }
     @Override
@@ -35,9 +42,7 @@ public class UserMemoService_InApp implements UserMemo {
         if (!opt.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"No user with such ID's was found");
         var user = opt.get();
         if ( !(info.email().equals(onlyValid.getEmail()) || info.id().equals(onlyValid.getId())) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user email");
-        if (!info.password().equals(user.getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
-
-//        if ( !passwordEncoder.matches(info.password,user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
+        if ( !passwordEncoder.matches(info.password(),user.getPassword()) ) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user password");
 
         // if (!info.password.equals(onlyValid.getPassword())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid user password");
         return user;

@@ -40,7 +40,7 @@ public class Room implements Serializable{
     private Quiz quiz;
     private String status;
     private Map<Player,Map<Question,Choice>> playersChoices = new HashMap<>();
-    private Map<Player,Integer> playersScores = new HashMap<>();
+    private Map<Player,Float> playersScores = new HashMap<>();
     private int currentQuestionIndex=-1;
 
     public Set<User> getUsers() {
@@ -65,7 +65,7 @@ public class Room implements Serializable{
         }
     }
     
-    public Integer getPlayersScore(Player player) {
+    public Float getPlayersScore(Player player) {
         return playersScores.get(player);
     }
     public Map<Question, Choice> getPlayersChoices(Player player) {
@@ -147,21 +147,21 @@ public class Room implements Serializable{
         currentQuestionIndex+=1;
         return nextQuestion;
     }
-    public List<Entry<Player, Integer>> end(){
+    public List<Entry<Player, Float>> end(){
         this.status = STATUS_COMPLETE;
         this.currentQuestionIndex = -1;
         return calcScores().toList();
     }
 
-    Stream<Entry<Player, Integer>> calcScores(){ // Map<Player,Integer>
+    Stream<Entry<Player, Float>> calcScores(){ // Map<Player,Integer>
         this.playersChoices.forEach((Player player, Map<Question,Choice> choices)->{
-            int score = 0;
+            float score = 0;
             for (Map.Entry<Question,Choice> entry : choices.entrySet()){
                 score += entry.getValue().getValue();
             }
             this.playersScores.put(player, score);
         });
-        return playersScores.entrySet().stream().sorted(Map.Entry.<Player,Integer>comparingByValue().reversed());
+        return playersScores.entrySet().stream().sorted(Map.Entry.<Player,Float>comparingByValue().reversed());
         // return this.playersScores;
     }
 

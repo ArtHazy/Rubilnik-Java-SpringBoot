@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Arrays;
 
 // Using ResponceEntity at top level of controller mapping, using throw ResponceStatusException in submethods (not bothering with return), ResponceStatusException handled by controller
 @SpringBootApplication
@@ -38,11 +41,11 @@ public class HttpUserController {
     AuthenticationManager authManager;
     @Autowired
     UserMemo memo;
-    @Autowired
+    @Autowired(required = false)
     EmailService emailService;
     @Autowired
     CurrentHttpSessionUserResolver clientResolver;
-    @Autowired
+    @Autowired(required = false)
     EmailVerificationTokenService emailVerificationTokenService;
 
     record PostUserJsonBody(User user) {}
@@ -68,6 +71,7 @@ public class HttpUserController {
         HttpServletRequest req, HttpServletResponse res
     ){
         var user = memo.getValid(body.validation);
+        System.out.println("!!! "+user.getEmail()+" "+user.getPassword());
         try {
             // BREAKABLE (403) Conflicts with .formLogin() in config
             var token = new UsernamePasswordAuthenticationToken( body.validation.email(), body.validation.password() );
@@ -80,6 +84,9 @@ public class HttpUserController {
                 SecurityContextHolder.getContext()
             );
         } catch (AuthenticationException e) {
+            System.out.println("!!! catch ");
+            System.out.println(Arrays.toString(e.getStackTrace()));
+
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

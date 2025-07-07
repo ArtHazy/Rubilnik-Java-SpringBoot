@@ -22,25 +22,26 @@ fun networkSettings() {
         var ssid by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var qrstr by remember { mutableStateOf(Optional.of("")) }
-
-
 //        Text("Network settings", )
 
         Text(bundle.getString("network_settings"), style = myTypography.h5, modifier = Modifier.padding(8.dp))
-        MyTextField(label = { Text(bundle.getString("encryption")) }, value = encryption, onValueChange = {encryption=it})
-        MyTextField(label = { Text(bundle.getString("name")) }, value = ssid, onValueChange = {ssid=it})
-        MyTextField(label = { Text(bundle.getString("password")) }, value = password, onValueChange = {password=it}, visualTransformation = PasswordVisualTransformation())
+        MyTextField(label = { Text(bundle.getString("encryption")) }, value = encryption, onValueChange = {encryption=it; updQrString(encryption,ssid,password) })
+        MyTextField(label = { Text(bundle.getString("name")) }, value = ssid, onValueChange = {ssid=it; updQrString(encryption,ssid,password)})
+        MyTextField(label = { Text(bundle.getString("password")) }, value = password, onValueChange = {password=it; updQrString(encryption,ssid,password)}, visualTransformation = PasswordVisualTransformation())
         MyCentredRow(modifier = Modifier.fillMaxWidth()){
             Button(onClick = {
                 val (encryption_, ssid_, password_) = myGetCurrentWifiNetData()
                 encryption=encryption_
                 ssid=ssid_
                 password=password_
-                qrstr=Optional.of("WIFI:T:${encryption};S:${ssid};P:${password};H:false;;")
-                Global.lanQrString=qrstr
+                updQrString(encryption,ssid,password)
             }) {
                 Text(bundle.getString("use_current_network"))
             }
         }
     }
+}
+
+fun updQrString(encryption: String, ssid: String, password: String){
+    Global.lanQrString=Optional.of("WIFI:T:${encryption};S:${ssid};P:${password};H:false;;")
 }

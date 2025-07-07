@@ -1,10 +1,12 @@
 package org.rubilnik.ui.desktop
 
 import java.io.File
+import java.net.NetworkInterface
 import java.net.ServerSocket
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-fun myStartServices(auth_service_port: String, room_service_port: String, netData: WifiNetData){
+fun myStartServices(auth_service_port: String, room_service_port: String){
     // auth-service
     // org.rubilnik.auth_service.App.main(arrayOf("--server.port=8083","--rubilnik.def-usr.name=admin", "--rubilnik.def-usr.email=admin", "--rubilnik.def-usr.password=admin"))
     val jarStreamAuth = object {}.javaClass.getResourceAsStream("/jars/_auth-service.jar")
@@ -95,4 +97,23 @@ fun myGetCurrentWifiNetData():WifiNetData {
         return WifiNetData(encryption,ssid,password)
     }
     return WifiNetData("","","")
+}
+
+
+fun getLocalIP(): String {
+    try {
+        val interfaces = NetworkInterface.getNetworkInterfaces()
+        while (interfaces.hasMoreElements()) {
+            val iface = interfaces.nextElement()
+            if (iface.isUp && !iface.isLoopback) {
+                val interfaceAddresses = iface.interfaceAddresses
+                for (address in interfaceAddresses) {
+                    if (address.address.isSiteLocalAddress && address.address.hostAddress.contains("192.168.0")) return address.address.hostAddress // getCanonicalHostName() // "user_pc"
+                }
+            }
+        }
+    } catch (e: Exception) {
+        println(e.message)
+    }
+    return "failed"
 }
