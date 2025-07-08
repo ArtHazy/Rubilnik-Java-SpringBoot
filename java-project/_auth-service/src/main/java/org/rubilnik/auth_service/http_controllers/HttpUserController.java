@@ -71,7 +71,6 @@ public class HttpUserController {
         HttpServletRequest req, HttpServletResponse res
     ){
         var user = memo.getValid(body.validation);
-        System.out.println("!!! "+user.getEmail()+" "+user.getPassword());
         try {
             // BREAKABLE (403) Conflicts with .formLogin() in config
             var token = new UsernamePasswordAuthenticationToken( body.validation.email(), body.validation.password() );
@@ -84,9 +83,6 @@ public class HttpUserController {
                 SecurityContextHolder.getContext()
             );
         } catch (AuthenticationException e) {
-            System.out.println("!!! catch ");
-            System.out.println(Arrays.toString(e.getStackTrace()));
-
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
