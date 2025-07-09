@@ -15,7 +15,6 @@ public class UserValidationDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("UserValidationDetailsService");
         var user = memo.get(null,username).orElseThrow(()->new UsernameNotFoundException("User with such email wasn't found"));
-        System.out.println("!"+user.getEmail()+" "+user.getPassword());
         return User.withUsername(user.getEmail())
                 .password(user.getPassword())
                 .roles("def")

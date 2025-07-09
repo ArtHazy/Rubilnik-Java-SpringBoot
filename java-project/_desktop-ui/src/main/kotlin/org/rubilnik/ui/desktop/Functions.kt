@@ -48,7 +48,9 @@ data class WifiNetData (val encryption:String, val ssid:String, val password:Str
 fun myGetCurrentWifiNetData():WifiNetData {
     var os_name = System.getProperty("os.name")
     val logFile = File.createTempFile("logFile",".txt")
+
     val logFilePath = logFile.absolutePath //"C:\\Users\\artem\\OneDrive\\Desktop\\logFile.txt"
+    println("logfile-path: ${logFilePath}")
     // if Windows
     if (os_name.contains("Win")){
         val scriptTempFile = File.createTempFile("wifi-win",".ps1")
@@ -59,10 +61,10 @@ fun myGetCurrentWifiNetData():WifiNetData {
         val command = "Start-Process powershell.exe -ArgumentList '-File \"${scriptPath}\" -logFile \"${logFilePath}\"' -Verb RunAs"
         val process = ProcessBuilder("powershell.exe","-Command",command)
         val result = process.redirectOutput(ProcessBuilder.Redirect.PIPE).start().waitFor()
-        // Thread.sleep(1000)
+        Thread.sleep(3000)
     }
     // if MacOS
-    else if (os_name.contains("Mac")) { // TODO
+    else if (os_name.contains("Mac")) {
         println("   os: mac")
         val scriptTempFile = File.createTempFile("wifi-mac",".sh")
         val scriptPath = scriptTempFile.absolutePath
@@ -79,13 +81,14 @@ fun myGetCurrentWifiNetData():WifiNetData {
 //        val process = ProcessBuilder("sudo", "-S", scriptPath, logFilePath)
 //        val result = process.inheritIO().start().waitFor()
         println("result ${exitCode}")
-        Thread.sleep(1000)
+        Thread.sleep(3000)
     } else {
         println("undef OS")
         return WifiNetData("","","")
     }
 
     val lines = logFile.readLines()
+    println("lines ${lines}")
     if (lines.size>=3){
         val ssid = lines[0]
         val password = lines[1]

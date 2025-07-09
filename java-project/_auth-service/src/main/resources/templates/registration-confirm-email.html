@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" style="height:100svh; background:#242424">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" style="height:100svh; background:#242424">
 <head>
     <meta charset="UTF-8">
-    <title>Notification</title>
+    <title>Уведомление</title>
     <style>
         body {
           font-family: Arial, sans-serif;
@@ -45,13 +45,13 @@
 </head>
 <body>
 <div class="container">
-    <h1 th:text="'Hello, ' + ${username} + '!'">Hello, ${username}!</h1>
-    <span>A user registration request has been sent to your email address</span>
+    <h1 th:text="'Здравствуйте, ' + ${username} + '!'">Здравствуйте, ${username}!</h1>
+    <span>На ваш адрес электронной почты была отправлена заявка на регистрацию пользователя</span>
     <a th:href="${url}" th:text="${url}">${url}</a>.
-    <span>To continue with the registration, please confirm your email by clicking the button below:</span>
-    <a th:href="${link}" href="http://rubilnik.ddns.net" class="button">Confirm Email</a>
+    <span>Чтобы продолжить регистрацию, подтвердите свою электронную почту, нажав кнопку ниже:</span>
+    <a th:href="${link}" href="http://rubilnik.ddns.net" class="button">Подтвердить Email</a>
     <div class="footer">
-        © 2025 Rubilnik. All rights reserved.
+        © 2025 Rubilnik. Все права защищены.
     </div>
 </div>
 </body>

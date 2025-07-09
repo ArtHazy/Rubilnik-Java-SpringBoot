@@ -31,6 +31,7 @@ fun networkSettings() {
         MyCentredRow(modifier = Modifier.fillMaxWidth()){
             Button(onClick = {
                 val (encryption_, ssid_, password_) = myGetCurrentWifiNetData()
+                println("ESP: ${encryption_}, ${ssid_}, ${password_}")
                 encryption=encryption_
                 ssid=ssid_
                 password=password_

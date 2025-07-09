@@ -12,7 +12,7 @@
             box-sizing: border-box;
             font-family: 'Russo One';
         }
-        
+
         body {
             height: 100vh;
             background: #242424;
@@ -41,7 +41,7 @@
             pointer-events: none;
             /* z-index: 1; */
         }
-        
+
         .container {
             width: 100%;
             max-width: 600px;
@@ -52,7 +52,7 @@
             z-index: 10;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        
+
         .header {
             background: #709B95;
             padding: 20px;
@@ -60,7 +60,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .header::before {
             content: '';
             position: absolute;
@@ -76,7 +76,7 @@
             );
             animation: shine 3s infinite;
         }
-        
+
         .header h1 {
             font-size: 2.2rem;
             font-weight: 400;
@@ -84,13 +84,13 @@
             position: relative;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        
+
         .message-container {
             padding: 40px 30px;
             text-align: center;
             position: relative;
         }
-        
+
         .message {
             font-size: 1.4rem;
             line-height: 1.6;
@@ -101,31 +101,31 @@
             border-radius: 8px;
             position: relative;
             overflow: hidden;
-            animation: 
+            animation:
                 slideIn 0.5s ease-out forwards;
         }
-        
+
         .success {
             border-left: 4px solid #3B765A;
             background: rgba(59, 118, 90, 0.1);
         }
-        
+
         .warning {
             border-left: 4px solid #D6BF81;
             background: rgba(214, 191, 129, 0.1);
         }
-        
+
         .error {
             border-left: 4px solid #B83B5E;
             background: rgba(184, 59, 94, 0.1);
         }
-        
+
         .timer {
             font-size: 1.2rem;
             margin-top: 20px;
             color: #525252;
         }
-        
+
         .link {
             display: inline-block;
             margin-top: 20px;
@@ -141,21 +141,21 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-            
+
             outline: 2px solid #d6bf81;
             outline-offset: -2px;
-            transition: 
+            transition:
                 outline-width 0.3s,
                 outline-offset 0.3s;
         }
-        
+
         .link:hover {
             outline-offset: -4px;
             outline-width: 3px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
             background: rgba(112, 155, 149, 0.1);
         }
-        
+
         .footer {
             text-align: center;
             padding: 20px;
@@ -164,7 +164,7 @@
             color: #727272;
             border-top: 1px solid #525252;
         }
-        
+
         .logo {
             font-size: 1.8rem;
             font-weight: 400;
@@ -177,11 +177,11 @@
         .logo-part-1 {
             color: #0FD4CD;
         }
-        
+
         .logo-part-2 {
             color: #d6bf81;
         }
-        
+
         .progress-bar {
             height: 6px;
             background: #525252;
@@ -191,77 +191,77 @@
             will-change: width; /* Подсказка браузеру для оптимизации */
             transform: translateZ(0); /* Аппаратное ускорение */
         }
-        
+
         .progress {
             height: 100%;
-            background: #709B95; 
+            background: #709B95;
             border-radius: 3px;
             width: 100%;
             transition: width 1s linear;
         }
-        
+
         .status-icon {
             font-size: 3rem;
             margin-bottom: 20px;
             animation: float 3s ease-in-out infinite;
         }
-        
+
         @keyframes shine {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
-        
+
         @keyframes slideIn {
-            from { 
-                transform: translateY(20px); 
+            from {
+                transform: translateY(20px);
                 opacity: 0;
             }
-            to { 
-                transform: translateY(0); 
+            to {
+                transform: translateY(0);
                 opacity: 1;
             }
         }
-        
+
         @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
-        
+
         @media (max-width: 480px) {
             .message {
                 font-size: 1.2rem;
                 padding: 15px;
             }
-            
+
             .header h1 {
                 font-size: 1.8rem;
             }
-            
+
             .link {
                 padding: 10px 20px;
                 font-size: 1rem;
             }
-            
+
             .status-icon {
                 font-size: 2.5rem;
             }
         }
     </style>
 </head>
-<body>    
+<body>
     <div class="container">
         <div class="header">
             <h1>Верификация аккаунта</h1>
         </div>
-        
+
         <div class="message-container">
             <div class="status-icon">🔒</div>
-            
+
             <div class="message" id="messageDisplay">
                 Идет проверка токена верификации...
             </div>
-            
+
             <div class="timer" id="timer">
                 Ожидание: <span id="countdown">3</span> сек
             </div>
@@ -269,20 +269,20 @@
             <div class="progress-bar">
                 <div class="progress" id="progressBar"></div>
             </div>
-            
+
             <a th:href="${link}" href="http://rubilnik.ddns.net/login" class="link" id="actionLink" style="display: none;">
                 Перейти на страницу входа
             </a>
         </div>
-        
+
         <div class="footer">
             <div class="logo">
                 <span class="logo-part-1">РУБИЛЬ</span><span class="logo-part-2">НИК</span>
             </div>
         </div>
     </div>
-    
-    <script>
+
+    <script th:inline="javascript">
         // Элементы страницы
         const messageDisplay = document.getElementById('messageDisplay');
         const countdownElement = document.getElementById('countdown');
@@ -303,10 +303,10 @@
         function updatePage(message, status) {
             // Обновляем текст сообщения
             messageDisplay.textContent = message;
-            
+
             // Удаляем все предыдущие классы
             messageDisplay.className = 'message';
-            
+
             // Устанавливаем соответствующий стиль
             if (status === 'success') {
                 messageDisplay.classList.add('success');
@@ -327,29 +327,29 @@
                 statusIcon.textContent = '⚠️';
                 statusIcon.style.color = '#D6BF81';
             }
-            
+
             // Сбрасываем таймер
             resetTimer(status);
         }
-        
+
         // Таймер
         let countdown;
         let secondsLeft;
-        
+
         function resetTimer(status) {
             clearInterval(countdown);
-            
+
             secondsLeft = status === 'success' ? 3 : 5;
             countdownElement.textContent = secondsLeft;
-            
+
             countdown = setInterval(() => {
                 secondsLeft--;
                 countdownElement.textContent = secondsLeft;
-                
+
                 // Обновляем прогресс-бар
                 const percent = (secondsLeft / (status === 'success' ? 3 : 5)) * 100;
                 progressBar.style.width = percent + '%';
-                
+
                 if (secondsLeft < 0) {
                     clearInterval(countdown);
 
@@ -380,7 +380,7 @@
                 }
             }, 1000);
         }
-        
+
         // Обработка загрузки
         window.addEventListener('load', function() {
             // Пытаемся получить статус из URL
